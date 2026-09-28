@@ -112,10 +112,10 @@ export const ARCHIVE = {
     // Optional per item: image (a scan, e.g. "img/aws.jpg"), link (credential
     // URL), date ("2024-06") , they show up on the placard when filled in.
     items: [
-      { title: "Machine Learning Specialization", issuer: "DeepLearning.AI (Andrew Ng)", image: "", link: "", date: "", note: "" },
-      { title: "Full-Stack Development", issuer: "Angela Yu", image: "", link: "", date: "", note: "" },
-      { title: "AWS Cloud Practitioner Essentials", issuer: "Amazon Web Services", image: "", link: "", date: "", note: "" },
-      { title: "Meta Front-End Developer Certification", issuer: "Meta", image: "", link: "", date: "", note: "" },
+      { title: "Machine Learning Specialization", issuer: "DeepLearning.AI (Andrew Ng)", image: "/img/certs/ml.jpg", link: "https://www.coursera.org/account/accomplishments/specialization/WQRP6TT4UB5F", date: "2024-12", note: "" },
+      { title: "Full-Stack Development", issuer: "Angela Yu", image: "/img/certs/fullstack.jpg", link: "https://www.udemy.com/certificate/UC-bd1614c7-2d02-44f4-af74-cfa81203ac0d/", date: "2025-08", note: "" },
+      { title: "AWS Cloud Practitioner Essentials", issuer: "Amazon Web Services", image: "/img/certs/aws.jpg", link: "https://drive.google.com/file/d/1PPcS1IWKxdJRglB30HEy-BEo2dckBdla/view?usp=sharing", date: "2026-07", note: "" },
+      { title: "Meta Front-End Developer Certification", issuer: "Meta", image: "/img/certs/meta.jpg", link: "https://www.coursera.org/account/accomplishments/verify/B5O0579M1C9D", date: "2025-10", note: "" },
     ],
   },
 

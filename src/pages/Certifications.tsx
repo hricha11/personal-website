@@ -22,11 +22,17 @@ function CertArt({ c }: { c: Cert }) {
   )
 }
 
-function Exhibit({ c, no }: { c: Cert; no: string }) {
+function Exhibit({ c, no, lit, toggle }: { c: Cert; no: string; lit: boolean; toggle: () => void }) {
   const [turned, setTurned] = useState(false)
   return (
-    <figure className="exhibit">
-      <span className="picture-light" aria-hidden="true" />
+    <figure className={`exhibit ${lit ? "is-lit" : ""}`}>
+      {/* the picture light: one click on the lamp or its switch lights the certificate */}
+      <button type="button" className="lamp-btn" onClick={toggle} aria-pressed={lit}
+        aria-label={lit ? `Switch off the light over ${c.title}` : `Switch on the light over ${c.title}`}>
+        <span className="picture-light" aria-hidden="true" />
+        <span className="lamp-switch" aria-hidden="true"><span className="ls-dot" />{lit ? "light on" : "light off"}</span>
+      </button>
+      <span className="lamp-cone" aria-hidden="true" />
       <button type="button" className={`flip ${turned ? "is-turned" : ""}`} onClick={() => setTurned((t) => !t)}
         aria-pressed={turned} aria-label={turned ? `Turn ${c.title} back round` : `Turn ${c.title} over to read the back`}>
         <span className="flip-inner">
@@ -49,8 +55,21 @@ function Exhibit({ c, no }: { c: Cert; no: string }) {
         <span className="pl-no">{no}</span>
         <span className="pl-title">{c.title}</span>
         <span className="pl-issuer">{c.issuer}{c.date && ` · ${fmtMonth(c.date)}`}</span>
-        {c.link && <a className="pl-cred" href={c.link} target="_blank" rel="noopener">view credential ↗</a>}
       </figcaption>
+      {/* under the light, the certificate of authenticity appears: a ticket to the original */}
+      <div className="auth-ticket" aria-hidden={!lit}>
+        {c.link ? (
+          <a href={c.link} target="_blank" rel="noopener" tabIndex={lit ? 0 : -1}>
+            <span className="at-kicker">verified original</span>
+            <span className="at-go">see the real certificate ↗</span>
+          </a>
+        ) : (
+          <span className="at-none">
+            <span className="at-kicker">verified original</span>
+            <span className="at-go">link to the real one coming soon</span>
+          </span>
+        )}
+      </div>
     </figure>
   )
 }
@@ -58,17 +77,28 @@ function Exhibit({ c, no }: { c: Cert; no: string }) {
 export default function Certifications() {
   const s = section("certifications")!
   useTitle(s.title)
+  const items = A.certifications.items
+  const [lights, setLights] = useState(() => items.map(() => false))
+  const allOn = lights.every(Boolean)
   return (
     <Page>
       <PageHead trail={[{ label: s.title }]} catalogue={s.catalogue} name={s.title} title="Certifications" lede={A.certifications.lede} note="turn one over" />
       <section className="museum reveal" aria-label="Gallery">
+        <button type="button" className={`master-switch ${allOn ? "on" : ""}`} aria-pressed={allOn}
+          onClick={() => setLights(items.map(() => !allOn))}>
+          <span className="ms-track" aria-hidden="true"><span className="ms-knob" /></span>
+          {allOn ? "gallery lights on" : "switch on all the lights"}
+        </button>
         <div className="museum-wall">
           <span className="picture-rail" aria-hidden="true" />
           <div className="museum-hang">
-            {A.certifications.items.map((c, i) => <Exhibit key={c.title} c={c} no={`${s.catalogue}.${pad(i + 1)}`} />)}
+            {items.map((c, i) => (
+              <Exhibit key={c.title} c={c} no={`${s.catalogue}.${pad(i + 1)}`} lit={lights[i]}
+                toggle={() => setLights((l) => l.map((v, j) => (j === i ? !v : v)))} />
+            ))}
           </div>
         </div>
-        <p className="museum-hint">click a frame to turn it over</p>
+        <p className="museum-hint">click a lamp to light a certificate · click a frame to turn it over</p>
       </section>
     </Page>
   )
