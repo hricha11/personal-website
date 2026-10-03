@@ -4,7 +4,7 @@
 import { useEffect, type RefObject } from "react"
 import { animate, createDrawable, createScope, onScroll, splitText, stagger, utils } from "animejs"
 
-const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches
+export const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches
 
 /* Run animations scoped to a component's root element; selectors resolve
    inside it, and everything is reverted on unmount (or when `deps` change ,

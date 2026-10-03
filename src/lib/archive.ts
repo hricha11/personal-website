@@ -2,8 +2,9 @@
 import { ARCHIVE } from "@/content"
 
 export const A = ARCHIVE
-export type Section = (typeof A.sections)[number]
 export type Wing = (typeof A.wings)[number]
+export type Child = { id: string; title: string; catalogue: string }
+export type Section = Omit<(typeof A.sections)[number], "children"> & { children?: Child[] }
 
 export const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 export const ROMAN = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii", "xiii", "xiv", "xv"]
@@ -22,18 +23,30 @@ export const fmtDay = (d: string) => {
   return `${dd} ${MONTHS[+m - 1].slice(0, 3)} ${y}`.toUpperCase()
 }
 
-export const section = (id?: string) => A.sections.find((s) => s.id === id)
+/* Projects: only published ones are shown, and their exhibit numbers come
+   from their order here, so adding, removing or hiding one renumbers the rest. */
+export const PROJECTS = A.projects.items.filter((p) => !p.hidden)
+export const exhibitNo = (id: string) => pad(PROJECTS.findIndex((p) => p.id === id) + 1)
+
+/* Sections, with Personal Projects' pages listed from the published projects. */
+export const SECTIONS: Section[] = A.sections.map((s) =>
+  s.id === "projects" ? { ...s, children: PROJECTS.map((p) => ({ id: p.id, title: p.title, catalogue: `EX. ${exhibitNo(p.id)}` })) } : s,
+)
+
+export const section = (id?: string) => SECTIONS.find((s) => s.id === id)
 export const wing = (id?: string) => A.wings.find((w) => w.id === id)
-export const inWing = (id: string) => A.sections.filter((s) => s.wing === id)
-export const projectById = (id?: string) => A.projects.items.find((p) => p.id === id)
+export const inWing = (id: string) => SECTIONS.filter((s) => s.wing === id)
+export const projectById = (id?: string) => PROJECTS.find((p) => p.id === id)
 export const workById = (id?: string) => A.professional.items.find((p) => p.id === id)
-export const paperById = (id?: string) => A.papers.items.find((p) => p.id === id)
 export const childHref = (parent: string, id: string) => `/${parent}/${id}`
+/* a link to a file on this site (the résumé), downloaded rather than visited */
+export const isFile = (href: string) => href.startsWith("/") && href.endsWith(".pdf")
+export const RESUME = A.links.find((l) => isFile(l.href))
 
 /* The archive in reading order , drives previous/next links. */
 export type OrderEntry = { href: string; title: string; catalogue: string; wing?: string }
 export const ORDER: OrderEntry[] = [{ href: "/about", title: "About Me", catalogue: A.about.catalogue }]
-A.sections.forEach((s) => {
+SECTIONS.forEach((s) => {
   ORDER.push({ href: `/${s.id}`, title: s.title, catalogue: s.catalogue, wing: s.wing })
   ;(s.children || []).forEach((c) =>
     ORDER.push({ href: childHref(s.id, c.id), title: c.title, catalogue: c.catalogue, wing: s.wing }),

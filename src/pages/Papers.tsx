@@ -5,14 +5,15 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Page, PageHead } from "@/components/archive/parts"
 import { useTitle } from "@/lib/use-title"
-import { A, pad, projectById, section } from "@/lib/archive"
+import { pad, projectById, section } from "@/lib/archive"
+import { HIDDEN } from "@/content-hidden"
 
 export default function Papers() {
   const s = section("papers")!
   useTitle(s.title)
   const { id: focus } = useParams()
   const [topic, setTopic] = useState("all")
-  const items = A.papers.items
+  const items = HIDDEN.papers.items
   const topics = [...new Set(items.map((p) => p.topic))]
 
   // arriving from an exhibit's "related research": scroll to that paper
@@ -31,7 +32,7 @@ export default function Papers() {
   return (
     <Page>
       <PageHead trail={[{ label: s.title }]} catalogue={s.catalogue} name={s.title}
-        title={<>Research <em>Papers</em> Read</>} lede={A.papers.lede} note="read with a pencil" />
+        title={<>Research <em>Papers</em> Read</>} lede={HIDDEN.papers.lede} note="read with a pencil" />
 
       <ToggleGroup type="single" value={topic} onValueChange={(v) => setTopic(v || "all")} aria-label="Filter by topic"
         className="-mt-8 mb-12 flex-wrap justify-start gap-2">

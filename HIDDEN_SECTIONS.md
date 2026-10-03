@@ -1,17 +1,16 @@
 # Hidden sections
 
-Three sections are switched off for now. Nothing was deleted: their pages and
+Two sections are switched off for now. Nothing was deleted: their pages and
 all their writing are still in the project, just commented out so the site
 doesn't show them.
 
 | Section | Archive no. | Wing | Page file | Its writing |
 | --- | --- | --- | --- | --- |
-| Research Papers Read | 027 | Professional | `src/pages/Papers.tsx` | `papers:` in `src/content.ts` |
-| My Love for Journaling | 048 | Personal | `src/pages/Journaling.tsx` | `journaling:` in `src/content.ts` |
-| Running | 041 | Personal | `src/pages/Running.tsx` | `running:` in `src/content.ts` |
+| Research Papers Read | 027 | Professional | `src/pages/Papers.tsx` | `papers:` in `src/content-hidden.ts` |
+| My Love for Journaling | 048 | Personal | `src/pages/Journaling.tsx` | `journaling:` in `src/content-hidden.ts` |
 
 While hidden, they don't appear in the contents (the notebook's pages and the
-Index spread), the Ctrl K search, or the page-turning order. Visiting `#/papers`, `#/journaling` or `#/running` shows the "Not in the
+Index spread), the Ctrl K search, or the page-turning order. Visiting `#/papers` or `#/journaling` shows the "Not in the
 archive" page.
 
 ## How to bring one back
@@ -39,16 +38,6 @@ you want:
 2. **`src/App.tsx`**: uncomment `import Journaling from "@/pages/Journaling"`
    and the `/journaling` route.
 
-### Running
-
-Every number and log entry in `running:` is an invented draft. Replace the
-stats, the monthly distances, the timeline and the "hypothesis" text in
-`src/pages/Running.tsx` with your real running, then:
-
-1. **`src/content.ts`**: in `sections`, uncomment the `id: "running"` block.
-2. **`src/App.tsx`**: uncomment `import Running from "@/pages/Running"` and
-   the `/running` route.
-
 Then run `npm run build` to check everything still compiles.
 
 ## Worth knowing
@@ -56,3 +45,6 @@ Then run `npm run build` to check everything still compiles.
 - **The fig tree entry lives in the journal:** the 19 Nov 2025 entry about the
   fig tree is part of the hidden journal. The fig branch drawing on the
   contents page is unaffected.
+- **Running is live again** (Oct 2026), with real numbers from a Strava
+  export. To refresh it, export your Strava data again and update `running:`
+  in `src/content.ts`.

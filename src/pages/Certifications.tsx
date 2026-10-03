@@ -46,7 +46,7 @@ function Exhibit({ c, no, lit, toggle }: { c: Cert; no: string; lit: boolean; to
             <span className="back-label mono">{no} · {c.issuer}</span>
             {c.note
               ? <span className="back-note">{c.note}</span>
-              : <span className="back-note back-empty">nothing written on the back of this one yet</span>}
+              : <span className="back-note">{c.title}, from {c.issuer}{c.date && `, ${fmtMonth(c.date)}`}.</span>}
             <span className="back-turn">turn it back ↺</span>
           </span>
         </span>

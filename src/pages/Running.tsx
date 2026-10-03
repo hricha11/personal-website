@@ -1,7 +1,8 @@
-/* RUNNING , a documented experiment in consistency. */
-import { Crumbs, Page, Sec } from "@/components/archive/parts"
+/* RUNNING , a documented experiment in consistency. Every number comes from
+   my Strava export (see `running` in content.ts). */
+import { Crumbs, LabelTable, Page, Sec } from "@/components/archive/parts"
 import { useTitle } from "@/lib/use-title"
-import { A, MONTHS, fmtMonth, section } from "@/lib/archive"
+import { A, MONTHS, fmtDay, fmtMonth, section } from "@/lib/archive"
 
 function RunChart() {
   const r = A.running
@@ -29,6 +30,7 @@ function RunChart() {
         const x = L + i * step + (step - bw) / 2
         return (
           <g key={i}>
+            {i === 0 && mi !== 0 && <text x={x + bw / 2} y={H - 8} textAnchor="middle">{yr}</text>}
             {mi === 0 && (
               <>
                 <text x={x + bw / 2} y={H - 8} textAnchor="middle">{yr}</text>
@@ -57,9 +59,8 @@ export default function Running() {
       <Crumbs trail={[{ label: s.title }]} />
       <header className="page-head">
         <p className="catalogue">ARCHIVE <b>{s.catalogue}</b> · RUNNING</p>
-        <p className="ex-exhibit">EXHIBIT {s.catalogue}</p>
         <h1 className="page-title">Running</h1>
-        <p className="ex-years">SINCE {r.since}</p>
+        <p className="ex-years">SINCE {r.since.toUpperCase()}</p>
         <p className="run-quote">An ongoing experiment in consistency.</p>
         <span className="margin-note" aria-hidden="true">slow is still running</span>
       </header>
@@ -76,15 +77,12 @@ export default function Running() {
 
       <Sec n={++n} label="The hypothesis" hint="Framed like an experiment, because that’s how I got myself to start.">
         <dl className="spec">
-          <dt>Hypothesis</dt><dd>Consistency beats intensity.</dd>
-          <dt>Method</dt><dd>Three runs a week. Any pace. No skipping because it’s slow.</dd>
-          <dt>Controls</dt><dd>None, really. Life happens. That’s part of the experiment.</dd>
-          <dt>Status</dt><dd>Still running.</dd>
+          {r.hypothesis.map(([k, v]) => <span key={k} className="contents"><dt>{k}</dt><dd>{v}</dd></span>)}
         </dl>
       </Sec>
       <Sec n={++n} label="Monthly distance">
         <RunChart />
-        <div className="chart-cap"><span>Kilometres per month · hover a bar</span><span className="hand text-lg">the dips are monsoons and exams</span></div>
+        <div className="chart-cap"><span>Kilometres per month · hover a bar</span><span className="hand text-lg">{r.chartNote}</span></div>
       </Sec>
       <Sec n={++n} label="The log" hint="Moments worth writing down.">
         <ol className="runlog">
@@ -93,11 +91,8 @@ export default function Running() {
           ))}
         </ol>
       </Sec>
-      <Sec n={++n} label="Live data">
-        <div className="strava">
-          <p><span className="meta mb-1.5 block">STRAVA FEED · NOT CONNECTED</span>Recent runs will appear here once I connect Strava.</p>
-          <span className="hand">coming, eventually</span>
-        </div>
+      <Sec n={++n} label="Recent runs" hint="From Strava, newest first.">
+        <LabelTable rows={r.recent.map((run) => [fmtDay(run.date), `${run.name} · ${run.km} km · ${run.time} · ${run.pace} /km`] as [string, string])} />
       </Sec>
     </Page>
   )

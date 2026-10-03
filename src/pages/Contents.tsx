@@ -6,7 +6,7 @@ import { Flower } from "@/components/archive/flower"
 import { PageCorners } from "@/components/archive/page-corners"
 import { bloom, drawIn, useMotion, writeIn } from "@/lib/motion"
 import { useTitle } from "@/lib/use-title"
-import { A, HOME_TITLE, childHref, fmtDay, inWing, type Section, type Wing } from "@/lib/archive"
+import { A, HOME_TITLE, childHref, fmtDay, inWing, isFile, type Section, type Wing } from "@/lib/archive"
 
 function TocEntry({ s, i }: { s: Section; i: number }) {
   return (
@@ -79,7 +79,9 @@ export default function Contents() {
           </div>
           <p className="nb-links">
             {A.links.map((l) =>
-              l.href.startsWith("mailto:") ? (
+              isFile(l.href) ? (
+                <a key={l.label} className="ink-link" href={l.href} download>{l.label} ↓</a>
+              ) : l.href.startsWith("mailto:") ? (
                 <a key={l.label} className="ink-link" href={l.href}>{l.label}</a>
               ) : (
                 <a key={l.label} className="ink-link" href={l.href} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>

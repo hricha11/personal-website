@@ -10,8 +10,8 @@
   --paper-3: #E6DFCF;
   --ink: #1E1E1C;
   --ink-2: #353532;
-  --grey: #77736A;
-  --faint: #A8A397;
+  --grey: #67635A;   /* ≥ 4.5:1 on every paper tone (WCAG AA) */
+  --faint: #726E66;  /* lighter than grey, still 4.5:1 on paper */
   --rule: rgba(30, 30, 28, 0.14);
   --rule-strong: rgba(30, 30, 28, 0.32);
   --rust: #8A4B3C;
@@ -296,6 +296,13 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
 
 .comp-hint { text-align: center; font-family: var(--hand); font-size: 1.2rem; color: var(--grey); margin: 18px 0 0; min-height: 1.6em; animation: fade 1s 1.2s var(--ease) both; }
 .comp-hint .ink-link { font: inherit; color: var(--ink-2); }
+.comp-skip {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px 14px; margin: 6px auto 0; padding: 0 16px;
+  font-family: var(--mono); font-size-adjust: none; font-size: 12px; letter-spacing: 0.04em; color: var(--grey);
+  pointer-events: auto; animation: fade 1s 1.6s var(--ease) both;
+}
+.comp-skip .ink-link { display: inline-flex; align-items: center; min-height: 28px; font: inherit; color: var(--ink-2); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.is-open ~ .comp-skip { display: none; }
 
 /* "currently ," : an index card */
 .currently {
@@ -365,7 +372,7 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
 /* ==========================================================================
    View transitions
    ========================================================================== */
-.view { min-height: 100vh; outline: none; }
+.view { min-height: 100vh; min-height: 100svh; outline: none; }
 .view.out { opacity: 0; transform: translateY(8px); transition: opacity 0.28s var(--ease), transform 0.28s var(--ease); }
 .view.in { animation: pageIn 0.8s var(--ease-out); }
 @keyframes pageIn { from { opacity: 0; transform: translateY(14px) scale(0.995); } to { opacity: 1; transform: none; } }
@@ -373,7 +380,7 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
 /* ==========================================================================
    About Me , an open notebook (the contents)
    ========================================================================== */
-.spread-wrap { padding: 92px var(--gutter) 40px; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+.spread-wrap { padding: 92px var(--gutter) 40px; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
 .spread { position: relative; display: grid; grid-template-columns: 1fr 1fr; max-width: 76rem; width: 100%; margin: 0 auto; }
 .sheet {
   position: relative; display: flex; flex-direction: column;
@@ -596,7 +603,7 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
   .exhibit-card:nth-child(even) .specimen { order: 0; }
 }
 
-.ex-head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: end; margin-bottom: clamp(3rem, 7vw, 5rem); }
+.ex-head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; /* title and label share a top line, however long the label */ margin-bottom: clamp(3rem, 7vw, 5rem); }
 .ex-head .page-head { margin-bottom: 0; }
 .ex-exhibit { font-family: var(--mono); font-size-adjust: none; font-size: 12px; letter-spacing: 0.24em; color: var(--rust); margin: 0 0 0.8rem; }
 .ex-sub { font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 2.4vw, 1.6rem); color: var(--ink-2); margin: 0.8rem 0 0; }
@@ -706,7 +713,8 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
 .problem .a::before { content: "→ "; color: var(--grey); font-family: var(--mono); font-size-adjust: none; }
 @media (max-width: 700px) { .problem { grid-template-columns: 1fr; gap: 0.4rem; } }
 
-.folder { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+.folder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } /* two files to a row */
+@media (max-width: 640px) { .folder { grid-template-columns: 1fr; } }
 .file { border: 1px solid var(--rule); padding: 16px 18px 18px; position: relative; background: var(--paper); }
 .file::before { content: ""; position: absolute; top: -1px; left: -1px; width: 3.5rem; height: 3px; background: var(--ink-2); }
 .file .meta { margin-bottom: 0.5rem; }
@@ -1085,9 +1093,12 @@ body { font-weight: 400; }
 .sheet-r { position: relative; }
 .sheet-r .nb-fig { position: absolute; right: clamp(24px, 4.2vw, 60px); bottom: 3.2rem; margin: 0; }
 .sheet-r .fig-branch { width: clamp(96px, 10vw, 128px); }
+/* keep the links clear of the branch beside them */
+.sheet-r .nb-links { flex-wrap: wrap; row-gap: 4px; padding-right: clamp(110px, 12vw, 150px); }
 .sheet-foot { padding-top: 1.4rem; font-family: var(--hand); font-style: normal; font-size: 1.3rem; color: var(--grey); opacity: 0.8; } /* matches the notebook's "p. 1" */
 @media (max-width: 860px) {
   .sheet-r .nb-fig { position: static; margin: 1.4rem 0 0; }
+  .sheet-r .nb-links { padding-right: 0; }
 }
 
 /* the notebook's pages 2 and 3: a small copy of the Index spread, same
@@ -1159,12 +1170,14 @@ body { font-weight: 400; }
   position: absolute; inset: 0; display: grid; place-items: center;
   perspective: 2400px; pointer-events: none;
 }
+@supports (height: 100svh) { .opening { --pw: min(42vw, 430px, calc((100svh - 130px) / 1.3)); } }
 .bk-book {
   --bw: min(310px, 44vw, calc((100vh - 110px) / 1.42));
   position: relative; width: var(--bw); height: calc(var(--bw) * 1.42);
   transform-style: preserve-3d; container-type: inline-size; pointer-events: auto;
   font-size-adjust: none;
 }
+@supports (height: 100svh) { .bk-book { --bw: min(310px, 44vw, calc((100svh - 110px) / 1.42)); } }
 .bk-page, .bk-face { position: absolute; inset: 0; overflow: hidden; }
 .bk-right {
   display: flex; flex-direction: column;
@@ -1217,6 +1230,7 @@ body { font-weight: 400; }
 /* phones: one big page instead of a spread , the details move onto it */
 @media (max-width: 640px) {
   .bk-book { --bw: min(86vw, calc((100vh - 90px) / 1.42)); }
+  @supports (height: 100svh) { .bk-book { --bw: min(86vw, calc((100svh - 90px) / 1.42)); } }
   .bk-mobile-details { display: block; margin-bottom: 5cqw; }
   .bk-back > * { visibility: hidden; }
 }
@@ -1356,6 +1370,8 @@ body { font-weight: 400; }
 .exhibit .flip { transition: filter 0.6s var(--ease); filter: brightness(0.9) saturate(0.85); }
 .exhibit.is-lit .flip { filter: brightness(1.06) saturate(1.1); }
 .exhibit.is-lit .lamp-cone { opacity: 1; animation: lamp-flicker 0.5s steps(2) 1; }
+/* phones: the frame is the full width there, so the glow stays inside it */
+@media (max-width: 760px) { .lamp-cone { width: 100%; } }
 .exhibit.is-lit .picture-light { background: linear-gradient(180deg, #FFF3C4, #E9C866); box-shadow: 0 2px 14px 3px rgba(255, 222, 130, 0.8); }
 .exhibit.is-lit .frame-art { box-shadow: 0 0 22px rgba(255, 226, 140, 0.55) inset; }
 @keyframes lamp-flicker { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 1; } }

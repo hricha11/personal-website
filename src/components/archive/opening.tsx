@@ -6,8 +6,8 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react"
 import { FigBranch } from "@/components/archive/fig"
 import { Flower } from "@/components/archive/flower"
-import { A, fmtDay, inWing, wing } from "@/lib/archive"
-import { useMotion, writeIn } from "@/lib/motion"
+import { A, RESUME, fmtDay, inWing, isFile, wing } from "@/lib/archive"
+import { reduced, useMotion, writeIn } from "@/lib/motion"
 
 /* one ink per contact line, like the section tabs */
 const CONTACT_INKS = ["var(--ink-rose)", "var(--ink-ochre)", "var(--ink-slate)", "var(--ink-plum)", "var(--ink-teal)"]
@@ -56,13 +56,14 @@ function ReturnTo({ disabled }: { disabled: boolean }) {
         <p className="cur-head">find me ,</p>
         <ul>
           {A.links.map((l, i) => {
-            const external = !l.href.startsWith("mailto:")
+            const file = isFile(l.href)
+            const external = !file && !l.href.startsWith("mailto:")
             return (
               <li key={l.label} style={{ "--rust": CONTACT_INKS[i % CONTACT_INKS.length] } as CSSProperties}>
                 <a className="cur-row" href={l.href} tabIndex={disabled ? -1 : 0}
-                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+                  {...(file ? { download: "" } : external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
                   <span className="cur-verb">{l.label}</span>
-                  <span className="cur-what">{l.handle}{external ? " ↗" : ""}</span>
+                  <span className="cur-what">{l.handle}{file ? " ↓" : external ? " ↗" : ""}</span>
                 </a>
               </li>
             )
@@ -130,7 +131,7 @@ function PageThree() {
         <p className="mono pg-about-label">The short version</p>
         {A.about.short.map((p) => <p key={p}>{p}</p>)}
         <p className="pg-sign"><span className="hand">, Hri.</span><span className="mono">last written {fmtDay(A.lastUpdated)}</span></p>
-        <p className="pg-links">{A.links.map((l) => <span key={l.label}>{l.label}{l.href.startsWith("mailto:") ? "" : " ↗"}</span>)}</p>
+        <p className="pg-links">{A.links.map((l) => <span key={l.label}>{l.label}{isFile(l.href) ? " ↓" : l.href.startsWith("mailto:") ? "" : " ↗"}</span>)}</p>
       </div>
       <FigBranch className="pg-figbranch" />
       <span className="pg-num hand" aria-hidden="true">p. 3</span>
@@ -166,7 +167,7 @@ export function Opening({ onEnter, startAt = 0 }: { onEnter: (to?: string) => vo
   const [zooming, setZooming] = useState(false)
   useEffect(() => {
     if (stage !== 2) return
-    const quick = matchMedia("(prefers-reduced-motion: reduce)").matches
+    const quick = reduced()
     const z = setTimeout(() => setZooming(true), quick ? 0 : 900)
     const go = setTimeout(() => {
       setLeaving(true)
@@ -227,6 +228,14 @@ export function Opening({ onEnter, startAt = 0 }: { onEnter: (to?: string) => vo
       </div>
 
       <p className="comp-hint" aria-live="polite">{hint}</p>
+      {/* for anyone in a hurry: who this is, and a way straight in */}
+      {stage === 0 && !leaving && (
+        <p className="comp-skip">
+          <span>{A.opening.headline}</span>
+          <button type="button" className="ink-link" onClick={() => { setLeaving(true); onEnter("/about") }}>skip to the contents →</button>
+          {RESUME && <a className="ink-link" href={RESUME.href} download>résumé ↓</a>}
+        </p>
+      )}
     </section>
   )
 }

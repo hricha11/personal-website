@@ -6,23 +6,53 @@
 
    Certifications, projects, professional life, education, skills and
    achievements come from the résumé, which is the source of truth. Books
-   are Hricha’s own. Running, papers and the journal are hidden: their
-   content below is still DRAFT (see HIDDEN_SECTIONS.md).
+   are Hricha’s own. Papers and the journal are hidden: their drafts live in
+   content-hidden.ts so they don't ship (see HIDDEN_SECTIONS.md). Running is from a Strava export.
    ========================================================================== */
+
+/* The shape of one exhibit. Everything marked optional only shows when it's
+   filled in. Exhibit numbers (EXHIBIT 01, 02…) are not stored: they come from
+   each project's position among the published ones (see lib/archive.ts). */
+export type Project = {
+  id: string
+  title: string
+  subtitle: string
+  materials: string[]
+  summary: string
+  built: string[]
+  architecture: { label: string; note: string }[]
+  hidden?: boolean          // true = unpublished: not shown, not numbered
+  note?: string             // a short line on the object label (a generic one is used when empty)
+  highlight?: string        // the headline result, shown on the card and the label
+  links?: { repo?: string; demo?: string; video?: string }
+  problem?: string
+  training?: [string, string][]
+  decisions?: { decision: string; why: string }[]
+  challenges?: string[]
+  next?: string[]
+  dataset?: [string, string][]
+  model?: string
+  results?: { note: string; rows: { label: string; value: number }[] }
+  plates?: { caption: string; src: string }[]
+}
 
 export const ARCHIVE = {
   owner: "Hricha Mehra",
   tagline: "a collection of things I’ve built, learned, read, run, and written",
   opening: {
     subtitle: "notes from a life in progress",
+    // under the closed notebook, for anyone in a hurry
+    headline: "software engineer · HomeFirst Finance, Mumbai",
   },
   // Contact , shown on the notebook's inside cover and the contents page.
   // The email is also used by “Talk to me about this book”.
   email: "hrichamehra11@gmail.com",
   links: [
     { label: "Email", handle: "hrichamehra11@gmail.com", href: "mailto:hrichamehra11@gmail.com" },
-    { label: "LeetCode", handle: "Hriii11", href: "https://leetcode.com/u/Hriii11/" },
+    { label: "Résumé", handle: "download PDF", href: "/Hricha_Mehra_Resume.pdf" },
     { label: "GitHub", handle: "hricha11", href: "https://github.com/hricha11" },
+    { label: "LinkedIn", handle: "hrichamehra", href: "https://www.linkedin.com/in/hrichamehra" },
+    { label: "LeetCode", handle: "Hriii11", href: "https://leetcode.com/u/Hriii11/" },
     { label: "Instagram", handle: "@hricha_11", href: "https://www.instagram.com/hricha_11/" },
   ],
   lastUpdated: "2026-10-03",
@@ -58,18 +88,14 @@ export const ARCHIVE = {
       id: "projects", wing: "work", catalogue: "012", title: "Personal Projects", color: "var(--ink-teal)", petal: "var(--petal-leaf)",
       desc: "Three things I built, documented as exhibits.",
       note: "built at odd hours",
-      children: [
-        { id: "agrolens", title: "AgroLens", catalogue: "014" },
-        { id: "finscope", title: "FinScope", catalogue: "015" },
-        { id: "freshpress", title: "FreshPress", catalogue: "016" },
-      ],
+      // its pages (one per published project) are listed from `projects` below
     },
     {
       id: "professional", wing: "work", catalogue: "020", title: "Professional Life", color: "var(--ink-slate)", petal: "var(--petal-blue)",
       desc: "Where I’ve worked, and what I built there.",
       note: "not a résumé, I promise",
       children: [
-        { id: "hhfc", title: "All HHFC projects", catalogue: "021" },
+        { id: "hffc", title: "All HFFC projects", catalogue: "021" },
         { id: "chrysalis", title: "Chrysalis Technosoft", catalogue: "022" },
         { id: "tcet-erp", title: "TCET Open Source ERP", catalogue: "023" },
       ],
@@ -92,12 +118,11 @@ export const ARCHIVE = {
       desc: "A small library inside the museum.",
       note: "no star ratings here",
     },
-    // HIDDEN until real running data is in, see HIDDEN_SECTIONS.md
-    // {
-    //   id: "running", wing: "life", catalogue: "041", title: "Running", color: "var(--ink-terracotta)", petal: "var(--petal-peach)",
-    //   desc: "An ongoing experiment in consistency.",
-    //   note: "slow, mostly",
-    // },
+    {
+      id: "running", wing: "life", catalogue: "041", title: "Running", color: "var(--ink-terracotta)", petal: "var(--petal-peach)",
+      desc: "An ongoing experiment in consistency.",
+      note: "slow, mostly",
+    },
     // HIDDEN for now , see HIDDEN_SECTIONS.md to bring it back
     // {
     //   id: "journaling", wing: "life", catalogue: "048", title: "My Love for Journaling", color: "var(--ink-rose)", petal: "var(--petal-mauve)",
@@ -141,16 +166,18 @@ export const ARCHIVE = {
 
   /* ---------------------------------------------------------------------- */
   /* Everything below is from the résumé. Optional fields on an exhibit
-     (architecture, dataset, model, results, plates) only show when present. */
+     (see the Project type at the top) only show when present. */
   projects: {
     lede: "Things I built on my own time, documented as exhibits.",
+    // shown on an exhibit's label when it has no `note` of its own
+    genericNote: "A personal project exploring the practical application of software engineering concepts through design, implementation, and iteration.",
     items: [
       {
         id: "agrolens",
-        exhibit: "01",
-        catalogue: "014",
         title: "AgroLens",
         subtitle: "AI-powered agriculture system",
+        links: { repo: "https://github.com/hricha11/AgroLens" },
+        highlight: "YOLOv8n: 88.0% F1 · 87.8% precision · 88.3% recall · 4 ms per image",
         materials: ["YOLOv8", "Faster R-CNN", "Grad-CAM", "FastAPI", "Python"],
         summary: "A weed detection system: a YOLOv8 model served through a FastAPI inference service and a mobile app that shows each detection with a bounding box and confidence score.",
         problem: "Weeds cause around 15–20% of crop yield loss every year, and controlling them costs farmers roughly ₹2,000–4,000 per acre. Can a model spot weeds in a field photo quickly and reliably enough to help?",
@@ -214,13 +241,13 @@ export const ARCHIVE = {
           ],
         },
         plates: [
-          { caption: "System architecture: from field photo to detection and explanation", src: "/img/agrolens/architecture.png" },
           { caption: "YOLOv8n predictions: Asiatic Smartweed and Alligatorweed, with confidence scores", src: "/img/agrolens/predictions-smartweed.jpg" },
           { caption: "YOLOv8n predictions: Alligatorweed under changing light and clutter", src: "/img/agrolens/predictions-alligatorweed.jpg" },
           { caption: "Grad-CAM: the model looks at the central leaf structure, 74% sure of Alligatorweed", src: "/img/agrolens/gradcam-a.jpg" },
           { caption: "Grad-CAM: still finding the weed against bare soil and debris", src: "/img/agrolens/gradcam-b.jpg" },
           { caption: "Grad-CAM: leaf edges and veins pick out Black nightshade", src: "/img/agrolens/gradcam-c.jpg" },
           { caption: "Grad-CAM: a dense patch of overlapping weeds, each found", src: "/img/agrolens/gradcam-d.jpg" },
+          { caption: "System architecture: from field photo to detection and explanation", src: "/img/agrolens/architecture.png" },
           { caption: "Training and validation curves over 20 epochs", src: "/img/agrolens/training-curves.png" },
           { caption: "Precision–recall curve, per weed class and on average", src: "/img/agrolens/precision-recall.png" },
           { caption: "F1–confidence curve: the best threshold sits around 0.4–0.6", src: "/img/agrolens/f1-confidence.png" },
@@ -228,10 +255,9 @@ export const ARCHIVE = {
       },
       {
         id: "finscope",
-        exhibit: "02",
-        catalogue: "015",
         title: "FinScope",
         subtitle: "Real-time finance engine + forecasting",
+        links: { repo: "https://github.com/hricha11/FinScope" },
         materials: ["Spring Boot", "React", "MySQL", "Prophet", "JWT"],
         summary: "A personal finance engine: secure APIs for budgets and goals, Prophet forecasts of future spending, and live analytics dashboards.",
         problem: "Money moves in many small pieces: income, bills, budgets, goals. I wanted one place that keeps the balance honest and shows where spending is heading.",
@@ -268,10 +294,9 @@ export const ARCHIVE = {
       },
       {
         id: "freshpress",
-        exhibit: "03",
-        catalogue: "016",
         title: "FreshPress",
         subtitle: "Multi-source news aggregator",
+        links: { demo: "https://fresh-press-orpin.vercel.app/" },
         materials: ["React", "Express", "RSS Parser", "SendGrid"],
         summary: "A news aggregator that pulls from four Indian newspapers in under a minute and emails a daily digest.",
         problem: "Information overload: to compare what different papers say, you open four apps. Aggregators like Inshorts summarise and hide the source; I wanted the source to come first.",
@@ -303,7 +328,7 @@ export const ARCHIVE = {
           { caption: "The front page: live headlines from The Hindu, Indian Express, Times of India and LiveMint, filterable by source", src: "/img/freshpress/home.png" },
         ],
       },
-    ],
+    ] satisfies Project[] as Project[],
   },
 
   /* ---------------------------------------------------------------------- */
@@ -368,38 +393,22 @@ export const ARCHIVE = {
         ],
       },
       {
-        id: "hhfc",
+        id: "hffc",
         catalogue: "021",
-        title: "All HHFC projects",
+        title: "All HFFC projects",
         org: "HomeFirst Finance Company India Ltd.",
         period: "Jan 2026 – Present",
         role: "Software Engineer",
-        systems: ["Salesforce", "Apex", "SOQL", "Playwright", "TypeScript", "LLMs", "Logistic Regression"],
-        what: "Four projects so far at HomeFirst Finance: UI test automation, test-data automation, access auditing, and an in-house loan origination system.",
+        systems: ["Salesforce", "Apex", "SOQL", "Playwright", "TypeScript", "Logistic Regression"],
+        what: "Four projects so far at HomeFirst Finance: UI test automation, an in-house loan origination system, access auditing, and test-data automation.",
         built: [] as string[],
         subprojects: [
           {
             title: "LMS UI Test Automation",
             points: [
-              "Built an independent, black-box Playwright + TypeScript suite for the Loan Management System’s Salesforce screens: about 560 test cases across 40 specs, in 14 stages from masters and collateral through contracts, schedules, LTV, approval, disbursal, accrual and billing, payments, delinquency and closure.",
-              "Mirrored the QA workbook exactly (one folder per stage, one spec per module, one test step per line), with scripts that check the tests against the sheet and write each run’s results back into it.",
-              "Wrote an end-to-end flow that takes a single loan through its whole life: contract, schedule, approval, partial disbursals and part payments, Early-EMI, full disbursal and closure, checking amounts and the repayment schedule after every step.",
-              "Made it safe by design: it runs only against sandbox orgs and refuses production, and nothing saves data unless explicitly allowed for a dedicated test loan; blocked tests report exactly why.",
-              "Organised it with page objects for 24 screens and shared helpers for EMI and interest maths, disbursals and LTV.",
-            ],
-          },
-          {
-            title: "Test Data Generator",
-            points: [
-              "Engineered an Apex-based test-data automation framework that generates dependency-aware datasets across 20+ objects, streamlining test-data generation and execution.",
-              "Designed an LLM-powered layer that turns a testing requirement into an executable data-generation configuration.",
-            ],
-          },
-          {
-            title: "Security Control Center",
-            points: [
-              "Designed a centralised access-control auditing framework that runs periodic org-wide scans.",
-              "Used dynamic SOQL on metadata to resolve each user’s effective permissions accurately, giving clear visibility into who can access what.",
+              "Built a black-box Playwright + TypeScript suite for the Loan Management System’s Salesforce screens: about 560 tests across 14 stages, from contract creation to closure.",
+              "Mirrored the QA workbook step by step, with scripts that write each run’s results back into it.",
+              "Added an end-to-end flow that takes one loan through its whole life, checking amounts and the repayment schedule after every step. Sandbox-only by design.",
             ],
           },
           {
@@ -410,129 +419,28 @@ export const ARCHIVE = {
               "Built a secure Aadhaar data masking pipeline for sensitive customer information, meeting regulatory compliance while keeping the data usable downstream.",
             ],
           },
+          {
+            title: "Security Control Center",
+            points: [
+              "Designed a centralised access-control auditing framework that runs periodic org-wide scans.",
+              "Used dynamic SOQL on metadata to resolve each user’s effective permissions accurately, giving clear visibility into who can access what.",
+            ],
+          },
+          {
+            title: "Test Data Generator",
+            points: [
+              "Engineered an Apex-based test-data automation framework that generates dependency-aware datasets across 20+ objects, streamlining test-data generation and execution.",
+              "Designed a layer that turns a testing requirement into an executable data-generation configuration.",
+            ],
+          },
         ],
       },
     ],
   },
 
   /* ---------------------------------------------------------------------- */
-  papers: {
-    lede: "Papers I’ve read properly, slowly, with a pencil. The notes are more about what changed in my head than about the paper itself.",
-    items: [
-      {
-        id: "mohanty-2016",
-        title: "Using Deep Learning for Image-Based Plant Disease Detection",
-        authors: "Sharada P. Mohanty, David P. Hughes, Marcel Salathé",
-        year: 2016, venue: "Frontiers in Plant Science", topic: "Computer vision",
-        why: "It’s the paper behind PlantVillage, the dataset I started Agnolense with.",
-        core: "CNNs trained on a large, labelled set of leaf images can classify 26 diseases across 14 crops with very high accuracy.",
-        insight: "The authors themselves note that accuracy drops sharply on images taken in different conditions. I read that sentence and ignored it. I shouldn’t have.",
-        changed: "Limitations sections are the most important part of a paper.",
-        questions: "How much field data is enough to close the gap? Is there a principled way to know?",
-        related: ["agnolense"],
-      },
-      {
-        id: "gradcam-2017",
-        title: "Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization",
-        authors: "Ramprasaath R. Selvaraju, Michael Cogswell, Abhishek Das, et al.",
-        year: 2017, venue: "ICCV", topic: "Interpretability",
-        why: "I needed to know what my model was actually looking at.",
-        core: "Use the gradients flowing into the last convolutional layer to produce a heatmap of the regions that mattered for a prediction.",
-        insight: "A model can be right for the wrong reasons, and accuracy alone will never tell you.",
-        changed: "I now treat explanation tools as debugging tools, not presentation tools.",
-        questions: "How reliable are these heatmaps themselves? When do they mislead?",
-        related: ["agnolense"],
-      },
-      {
-        id: "efficientnet-2019",
-        title: "EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks",
-        authors: "Mingxing Tan, Quoc V. Le",
-        year: 2019, venue: "ICML", topic: "Computer vision",
-        why: "I needed a model small enough to run on an old phone.",
-        core: "Scale depth, width and resolution together with a fixed ratio, rather than scaling one dimension at a time.",
-        insight: "Bigger isn’t the only direction. Balanced often beats bigger.",
-        changed: "I started thinking about the deployment target before choosing an architecture.",
-        questions: "How do these scaling rules change when the input data is very different from ImageNet?",
-        related: ["agnolense"],
-      },
-      {
-        id: "resnet-2015",
-        title: "Deep Residual Learning for Image Recognition",
-        authors: "Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun",
-        year: 2015, venue: "CVPR", topic: "Computer vision",
-        why: "Everything I read referenced it. I wanted to understand why.",
-        core: "Let layers learn a residual on top of an identity shortcut, which makes very deep networks trainable.",
-        insight: "Sometimes the breakthrough is making the easy thing, doing nothing, easy for the network.",
-        changed: "Simple structural ideas can matter more than clever new components.",
-        questions: "Why do skip connections help optimisation so much? I understand the story, not the proof.",
-        related: ["agnolense"],
-      },
-      {
-        id: "attention-2017",
-        title: "Attention Is All You Need",
-        authors: "Ashish Vaswani, Noam Shazeer, Niki Parmar, et al.",
-        year: 2017, venue: "NeurIPS", topic: "Sequence models",
-        why: "To understand the architecture behind the tools I use every day.",
-        core: "Replace recurrence entirely with attention, so every token can look at every other token in parallel.",
-        insight: "Removing a constraint (sequential processing) unlocked scale more than adding anything did.",
-        changed: "I stopped thinking of attention as mysterious. It’s a weighted lookup, a very well-placed one.",
-        questions: "What are we losing by making everything attend to everything?",
-        related: [],
-      },
-      {
-        id: "isolation-forest-2008",
-        title: "Isolation Forest",
-        authors: "Fei Tony Liu, Kai Ming Ting, Zhi-Hua Zhou",
-        year: 2008, venue: "ICDM", topic: "Anomaly detection",
-        why: "Finscope needed to flag unusual transactions without labelled anomalies.",
-        core: "Anomalies are few and different, so they’re easier to isolate with random splits. Fewer splits needed → more anomalous.",
-        insight: "Instead of modelling “normal”, model how easy it is to separate something from everything else.",
-        changed: "Reframing the problem can be more powerful than a better model.",
-        questions: "How do you evaluate anomaly detection when you don’t know what the anomalies are?",
-        related: ["finscope"],
-      },
-      {
-        id: "prophet-2017",
-        title: "Forecasting at Scale",
-        authors: "Sean J. Taylor, Benjamin Letham",
-        year: 2017, venue: "The American Statistician", topic: "Forecasting",
-        why: "After my LSTM lost to a baseline, I wanted to understand what good forecasting actually looks like.",
-        core: "A decomposable model, trend, seasonality, holidays, that analysts can understand and adjust.",
-        insight: "A forecast people can reason about is worth more than a slightly better one they can’t.",
-        changed: "Interpretability is a feature, especially for personal data.",
-        questions: "Where’s the line between a model that’s simple enough to trust and too simple to be useful?",
-        related: ["finscope"],
-      },
-      {
-        id: "tabular-2021",
-        title: "Tabular Data: Deep Learning is Not All You Need",
-        authors: "Ravid Shwartz-Ziv, Amitai Armon",
-        year: 2021, venue: "Information Fusion", topic: "Machine learning",
-        why: "A sanity check after Finscope.",
-        core: "On many tabular datasets, gradient-boosted trees still outperform deep models, and they’re cheaper to tune.",
-        insight: "Choosing the tool for the data, not for the story you want to tell about the project.",
-        changed: "“What’s the simplest thing that could work?” is now my first question.",
-        questions: "Which properties of a dataset make deep learning worth it?",
-        related: ["finscope"],
-      },
-      {
-        id: "tech-debt-2015",
-        title: "Hidden Technical Debt in Machine Learning Systems",
-        authors: "D. Sculley, Gary Holt, Daniel Golovin, et al.",
-        year: 2015, venue: "NeurIPS", topic: "ML systems",
-        why: "Agnolense’s training code was fine. Everything around it was a mess.",
-        core: "The model is a small box in the middle of a very large system, data pipelines, configuration, monitoring, and that’s where the debt accumulates.",
-        insight: "The famous diagram: the ML code is the tiny square in the middle.",
-        changed: "I budget more time for the plumbing than the model now.",
-        questions: "What does good ML hygiene look like for a one-person project?",
-        related: ["agnolense", "finscope"],
-      },
-    ],
-  },
-
-  /* ---------------------------------------------------------------------- */
   books: {
-    lede: "My shelf so far, in order. Notes will come book by book, if you’ve read one of these, I’d genuinely like to hear what you thought.",
+    lede: "My shelf so far, in order. Notes will come book by book. If you’ve read one of these, I’d genuinely like to hear what you thought.",
     // Title and author, plus category and genres where known. `cover` is the
     // spine colour, matched to the book's best-known edition , change freely.
     // `pages` and `height` (mm, trim size) size the spine in true proportion.
@@ -616,53 +524,43 @@ export const ARCHIVE = {
 
   /* ---------------------------------------------------------------------- */
   running: {
-    since: "2024",
-    // DRAFT: every number and log entry below is invented. Replace before un-hiding.
+    // From my Strava export (36 runs, 8 Feb – 5 Sep 2026). Re-export and update
+    // these numbers by hand; nothing here is fetched live.
+    since: "Feb 2026",
     stats: [
-      { label: "Fastest 5K", value: "27:42", note: "Oct 2025" },
-      { label: "Fastest 10K", value: "58:10", note: "Mar 2026" },
-      { label: "Total distance", value: "1,248", unit: "km" },
-      { label: "Runs logged", value: "214" },
-      { label: "Longest run", value: "21.1", unit: "km", note: "first half marathon" },
+      { label: "Fastest 5K", value: "43:01", note: "Jun 2026" },
+      { label: "Longest run", value: "10", unit: "km", note: "my first 10K · May 2026" },
+      { label: "Total distance", value: "83.4", unit: "km" },
+      { label: "Runs logged", value: "36" },
+      { label: "Best month", value: "53.3", unit: "km", note: "May 2026 · 18 runs" },
     ],
-    // Monthly distance in km, starting January 2024. Placeholder data.
-    monthly: [
-      8, 14, 19, 22, 18, 12, 20, 26, 31, 34, 28, 22,
-      30, 36, 42, 45, 40, 32, 38, 48, 55, 60, 52, 44,
-      50, 56, 62, 58, 46, 40, 44, 52, 57,
-    ],
-    monthlyStart: "2024-01",
+    hypothesis: [
+      ["Hypothesis", "Consistency beats intensity."],
+      ["Method", "Log every run on Strava. Any distance, any pace: one kilometre still counts."],
+      ["What happened", "May: 18 runs, 53 km, a first 5K and a first 10K. Then it slipped."],
+      ["Status", "Starting over."],
+    ] as [string, string][],
+    // Kilometres per month, starting February 2026.
+    monthly: [8.4, 1.0, 5.0, 53.3, 11.0, 1.0, 0.7, 3.0],
+    monthlyStart: "2026-02",
+    chartNote: "May was the month it clicked",
     timeline: [
-      { date: "2024-01", text: "First run. Stopped four times in two kilometres." },
-      { date: "2024-03", text: "Ran 5 km without stopping. Sat on the pavement afterwards." },
-      { date: "2024-08", text: "Started running in the rain on purpose." },
-      { date: "2025-02", text: "First 10K. Slow. Very happy." },
-      { date: "2025-10", text: "5K under 28 minutes." },
-      { date: "2026-01", text: "Two years. Missed maybe six weeks, total." },
-      { date: "2026-03", text: "10K under an hour." },
-      { date: "2026-08", text: "First half marathon. 2:26. Walked a bit at 17 km. Didn’t care." },
+      { date: "2026-02-08", text: "First run: 1.05 km. I called it “First Run”." },
+      { date: "2026-03-21", text: "One run all month, 1 km, titled “Better than nothing 💀”." },
+      { date: "2026-05-16", text: "First 5K, listening to The Bell Jar by Sylvia Plath." },
+      { date: "2026-05-25", text: "First 10K, in 1:33:25." },
+      { date: "2026-05-31", text: "18 runs and 53 km in one month. Finished Strava’s May Ten Days Active and 400-minute challenges." },
+      { date: "2026-06-13", text: "Fastest 5K so far: 43:01." },
+      { date: "2026-07-12", text: "One kilometre, titled “starting over?”" },
+      { date: "2026-09-05", text: "3 km, titled “yup lost touch”. Picking it back up." },
     ],
-  },
-
-  /* ---------------------------------------------------------------------- */
-  journaling: {
-    intro: [
-      "Some things aren’t meant to be displayed.",
-      "These are the pieces I chose to preserve.",
-    ],
-    entries: [
-      // TODO: your own fragments. kinds: excerpt · question · changed · observation · reflection
-      { date: "2024-01-09", kind: "excerpt", text: "Ran today. Not well. But I went, which is the only part I promised myself." },
-      { date: "2024-04-22", kind: "question", text: "Do I like programming, or do I like the feeling of finally understanding something? Does it matter?" },
-      { date: "2024-07-15", kind: "changed", before: "Being busy means making progress.", after: "Being busy is often how I avoid deciding what matters." },
-      { date: "2024-10-03", kind: "observation", text: "I write better code in the morning and better sentences at night. I should stop fighting that." },
-      { date: "2025-02-18", kind: "excerpt", text: "The model was 98% accurate and completely wrong. There’s probably a lesson in that about more than models." },
-      { date: "2025-06-30", kind: "reflection", text: "Half a year of these pages and the same three worries keep coming back. Maybe that’s what they’re for, to notice what keeps coming back." },
-      { date: "2025-09-11", kind: "changed", before: "Asking questions makes me look like I don’t know things.", after: "Asking questions is how I stop not knowing things." },
-      { date: "2025-11-19", kind: "observation", text: "Thought about the fig tree again. Maybe the trick isn’t choosing faster, it’s noticing that you can come back for more than one." },
-      { date: "2026-01-01", kind: "question", text: "What would I build if no one were ever going to see it?" },
-      { date: "2026-05-27", kind: "observation", text: "The rain smelled like the first week of college. Some memories are stored in weather." },
-      { date: "2026-09-02", kind: "excerpt", text: "I don’t journal to remember. I journal to find out what I already think." },
+    // the latest runs, newest first
+    recent: [
+      { date: "2026-09-05", name: "yup lost touch", km: "3.00", time: "24:45", pace: "8:15" },
+      { date: "2026-08-22", name: "Evening Run", km: "0.67", time: "5:42", pace: "8:30" },
+      { date: "2026-07-12", name: "starting over?", km: "1.00", time: "8:50", pace: "8:50" },
+      { date: "2026-06-20", name: "Evening Run", km: "1.00", time: "7:43", pace: "7:43" },
+      { date: "2026-06-13", name: "Evening Run", km: "5.00", time: "43:01", pace: "8:36" },
     ],
   },
 };

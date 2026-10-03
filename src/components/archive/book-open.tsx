@@ -7,6 +7,7 @@ import { createTimeline } from "animejs"
 import { Tags } from "@/components/archive/parts"
 import { Flower } from "@/components/archive/flower"
 import { A, fmtMonth } from "@/lib/archive"
+import { reduced } from "@/lib/motion"
 
 export type Book = (typeof A.books.items)[number]
 type Props = {
@@ -33,7 +34,6 @@ const Highlights = ({ book }: { book: Book }) => (
   </>
 )
 
-const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches
 // on phones there's no spread: the book opens to a single page, so no slide
 const spreadShift = (el: HTMLElement) => (matchMedia("(max-width: 640px)").matches ? 0 : el.offsetWidth / 2)
 
@@ -105,9 +105,19 @@ export function BookOpen({ book, index, catalogue, shelf, colour, from, closing,
     return () => { document.body.style.overflow = prev }
   }, [])
 
-  // Esc puts the book back
+  // Esc puts the book back; Tab stays inside the open book (it's a modal)
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose() }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+      if (e.key !== "Tab" || !book3d.current) return
+      const items = [...book3d.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"]')]
+        .filter((el) => el.offsetParent !== null)
+      if (!items.length) return
+      const first = items[0], last = items[items.length - 1]
+      const inside = book3d.current.contains(document.activeElement)
+      if (e.shiftKey && (document.activeElement === first || !inside)) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && (document.activeElement === last || !inside)) { e.preventDefault(); first.focus() }
+    }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
   }, [onClose])

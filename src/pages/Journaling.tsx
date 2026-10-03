@@ -2,13 +2,14 @@
 import { Flower } from "@/components/archive/flower"
 import { Crumbs, Page } from "@/components/archive/parts"
 import { useTitle } from "@/lib/use-title"
-import { A, fmtDay, section } from "@/lib/archive"
+import { fmtDay, section } from "@/lib/archive"
+import { HIDDEN } from "@/content-hidden"
 
 const KINDS: Record<string, string> = { excerpt: "excerpt", question: "a question", changed: "changed my mind", observation: "observation", reflection: "reflection" }
 
 export default function Journaling() {
   const s = section("journaling")!
-  const j = A.journaling
+  const j = HIDDEN.journaling
   useTitle(s.title)
   return (
     <Page className="journal-page">

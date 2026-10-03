@@ -121,7 +121,7 @@ export function Plates({ items }: { items: readonly { caption: string; src: stri
         <figure className="plate" key={p.caption}>
           <div className="plate-frame">
             {p.src
-              ? <a href={p.src} target="_blank" rel="noreferrer" aria-label={`Open full size: ${p.caption}`}><img src={p.src} alt={p.caption} loading="lazy" /></a>
+              ? <a href={p.src} target="_blank" rel="noreferrer" aria-label={`Open full size: ${p.caption}`}><img src={p.src} alt="" loading="lazy" /></a>
               : <span className="pending">image to be added</span>}
           </div>
           <figcaption><span className="mono">PLATE {ROMAN[i].toUpperCase()}</span><span>{p.caption}</span></figcaption>
