@@ -6,11 +6,11 @@ import { useNavigate } from "react-router"
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator,
 } from "@/components/ui/command"
-import { A, childHref, inWing, section } from "@/lib/archive"
+import { A, childHref, inWing, pageOf } from "@/lib/archive"
 
-type RowProps = { num: string; title: string; desc?: string; to: string; sub?: boolean; color?: string; go: (to: string) => void }
+type RowProps = { num?: number; title: string; desc?: string; to: string; sub?: boolean; color?: string; go: (to: string) => void }
 const Row = ({ num, title, desc, to, sub, color, go }: RowProps) => (
-  <CommandItem value={`${num} ${title} ${desc ?? ""}`} onSelect={() => go(to)} className={`index-item ${sub ? "pl-8" : ""}`}
+  <CommandItem value={`${title} ${desc ?? ""}`} onSelect={() => go(to)} className={`index-item ${sub ? "pl-8" : ""}`}
     style={color ? ({ "--rust": color } as CSSProperties) : undefined}>
     <span className="index-num">{num}</span>
     <span className={sub ? "index-sub-title" : "index-title"}>{title}</span>
@@ -32,13 +32,13 @@ export default function IndexDialog({ open, setOpen }: { open: boolean; setOpen:
       <CommandList className="max-h-[min(60vh,520px)]">
         <CommandEmpty><span className="font-hand text-lg text-muted-foreground">nothing filed under that, yet</span></CommandEmpty>
         <CommandGroup heading="Start here">
-          <Row go={go} num={A.about.catalogue} title="About Me" desc="the contents" to="/about" />
+          <Row go={go} num={pageOf("/about")} title="About Me" desc="the contents" to="/about" />
         </CommandGroup>
         {A.wings.map((w) => (
           <CommandGroup key={w.id} heading={`${w.label} · ${w.title}`}>
             {inWing(w.id).flatMap((s) => [
-              <Row go={go} key={s.id} num={s.catalogue} title={s.title} desc={s.desc} to={`/${s.id}`} color={s.color} />,
-              ...(s.children ?? []).map((c) => <Row go={go} key={c.id} num={c.catalogue} title={c.title} to={childHref(s.id, c.id)} color={s.color} sub />),
+              <Row go={go} key={s.id} num={pageOf(`/${s.id}`)} title={s.title} desc={s.desc} to={`/${s.id}`} color={s.color} />,
+              ...(s.children ?? []).map((c) => <Row go={go} key={c.id} num={pageOf(childHref(s.id, c.id))} title={c.title} to={childHref(s.id, c.id)} color={s.color} sub />),
             ])}
           </CommandGroup>
         ))}
@@ -48,7 +48,7 @@ export default function IndexDialog({ open, setOpen }: { open: boolean; setOpen:
           {HIDDEN.papers.items.map((p) => <Row go={go} key={p.id} num={String(p.year)} title={p.title} to={`/papers/${p.id}`} />)}
         </CommandGroup> */}
         <CommandGroup heading="Books">
-          {A.books.items.map((b) => <Row go={go} key={b.title} num={section("books")?.catalogue ?? ""} title={b.title} desc={b.author} to="/books" />)}
+          {A.books.items.map((b) => <Row go={go} key={b.title} num={pageOf("/books")} title={b.title} desc={b.author} to="/books" />)}
         </CommandGroup>
       </CommandList>
     </CommandDialog>

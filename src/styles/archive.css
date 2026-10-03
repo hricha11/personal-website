@@ -535,6 +535,7 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
 
 /* Page footer: next/previous in the archive */
 
+.page-folio { margin: -1.4rem 0 0; padding: 0 0 2rem; text-align: center; font-family: var(--hand); font-size: 1.2rem; color: var(--grey); opacity: 0.8; }
 .colophon { font-family: var(--mono); font-size-adjust: none; font-size: 11px; letter-spacing: 0.1em; color: var(--faint); text-align: center; padding: 0 0 2.5rem; }
 
 /* Scroll reveal */

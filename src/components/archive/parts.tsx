@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router"
 import { Badge } from "@/components/ui/badge"
 import { Flower } from "@/components/archive/flower"
 import { PageCorners } from "@/components/archive/page-corners"
-import { A, ROMAN, fmtDay, pad, section, wing } from "@/lib/archive"
+import { A, ROMAN, fmtDay, pad, pageOf, section, wing } from "@/lib/archive"
 import { bloomOnScroll, useMotion, writeIn } from "@/lib/motion"
 
 type Trail = { href?: string; label: string }[]
@@ -72,6 +72,7 @@ export function Sec({ n, label, hint, children }: { n: number; label: string; hi
    children of the sheet so they can ride its bottom edge). */
 export function Page({ className = "", children }: { className?: string; children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null)
+  const page = pageOf(useLocation().pathname)
   useMotion(root, () => {
     writeIn(".page-title", 250)
     bloomOnScroll(".flower")
@@ -82,6 +83,7 @@ export function Page({ className = "", children }: { className?: string; childre
       <footer>
         <Flower className="colophon-flower" />
         <p className="colophon">MAINTAINED BY {A.owner.toUpperCase()} · LAST UPDATED {fmtDay(A.lastUpdated)}</p>
+        {page && <p className="page-folio">p. {page}</p>}
       </footer>
       <PageCorners />
     </div>

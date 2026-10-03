@@ -6,7 +6,7 @@ import { Flower } from "@/components/archive/flower"
 import { PageCorners } from "@/components/archive/page-corners"
 import { bloom, drawIn, useMotion, writeIn } from "@/lib/motion"
 import { useTitle } from "@/lib/use-title"
-import { A, HOME_TITLE, childHref, fmtDay, inWing, isFile, type Section, type Wing } from "@/lib/archive"
+import { A, HOME_TITLE, childHref, fmtDay, inWing, isFile, pageOf, type Section, type Wing } from "@/lib/archive"
 
 function TocEntry({ s, i }: { s: Section; i: number }) {
   return (
@@ -15,7 +15,7 @@ function TocEntry({ s, i }: { s: Section; i: number }) {
         <Flower className="toc-tab" />
         <span className="toc-t">{s.title}</span>
         <span className="toc-dots" aria-hidden="true" />
-        <span className="toc-n">{s.catalogue}</span>
+        <span className="toc-n">{pageOf(`/${s.id}`)}</span>
       </Link>
       <p className="toc-d">{s.desc}</p>
       <span className="toc-note" aria-hidden="true">{s.note}</span>
@@ -26,7 +26,7 @@ function TocEntry({ s, i }: { s: Section; i: number }) {
               <Link className="toc-row sub" to={childHref(s.id, c.id)}>
                 <span className="toc-t">{c.title}</span>
                 <span className="toc-dots" aria-hidden="true" />
-                <span className="toc-n">{c.catalogue}</span>
+                <span className="toc-n">{pageOf(childHref(s.id, c.id))}</span>
               </Link>
             </li>
           ))}
@@ -96,7 +96,7 @@ export default function Contents() {
         </section>
         <PageCorners />
       </div>
-      <p className="spread-hint" aria-hidden="true">pick any line to turn to that page, or press <kbd className="font-mono text-[0.8em] not-italic">Ctrl K</kbd> to search</p>
+      <p className="spread-hint" aria-hidden="true">pick any line to turn to that page</p>
     </div>
   )
 }

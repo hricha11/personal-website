@@ -43,14 +43,17 @@ export const childHref = (parent: string, id: string) => `/${parent}/${id}`
 export const isFile = (href: string) => href.startsWith("/") && href.endsWith(".pdf")
 export const RESUME = A.links.find((l) => isFile(l.href))
 
-/* The archive in reading order , drives previous/next links. */
-export type OrderEntry = { href: string; title: string; catalogue: string; wing?: string }
-export const ORDER: OrderEntry[] = [{ href: "/about", title: "About Me", catalogue: A.about.catalogue }]
+/* The archive in reading order , drives previous/next links and page numbers.
+   The notebook is pp. 1–3 (cover, then the contents spread), so the first
+   section starts on p. 4 and every page after it follows in this order. */
+export type OrderEntry = { href: string; title: string; catalogue: string; wing?: string; page: number }
+export const ORDER: OrderEntry[] = [{ href: "/about", title: "About Me", catalogue: A.about.catalogue, page: 2 }]
 SECTIONS.forEach((s) => {
-  ORDER.push({ href: `/${s.id}`, title: s.title, catalogue: s.catalogue, wing: s.wing })
+  ORDER.push({ href: `/${s.id}`, title: s.title, catalogue: s.catalogue, wing: s.wing, page: ORDER.length + 3 })
   ;(s.children || []).forEach((c) =>
-    ORDER.push({ href: childHref(s.id, c.id), title: c.title, catalogue: c.catalogue, wing: s.wing }),
+    ORDER.push({ href: childHref(s.id, c.id), title: c.title, catalogue: c.catalogue, wing: s.wing, page: ORDER.length + 3 }),
   )
 })
+export const pageOf = (href: string) => ORDER.find((e) => e.href === href)?.page
 
 export const HOME_TITLE = `${A.owner} · an archive`
