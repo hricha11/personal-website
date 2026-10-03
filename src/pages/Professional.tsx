@@ -8,6 +8,7 @@ import NotFound from "./NotFound"
 
 type Work = (typeof A.professional.items)[number]
 const subprojectsOf = (w: Work) => ("subprojects" in w ? w.subprojects : undefined)
+type Extra = { platform?: string[]; challenges?: { problem: string; approach: string }[]; learned?: string[]; hindsight?: string }
 
 export function Professional() {
   const s = section("professional")!
@@ -32,6 +33,25 @@ export function Professional() {
           </li>
         ))}
       </ol>
+
+      <Sec n={1} label="Education">
+        <ul className="edu">
+          {A.professional.education.map((e) => (
+            <li key={e.what} className="edu-row">
+              <span className="edu-when">{e.when}</span>
+              <span className="edu-what">{e.what}</span>
+              <span className="edu-where">{e.where} · {e.detail}</span>
+            </li>
+          ))}
+        </ul>
+      </Sec>
+      <Sec n={2} label="Toolkit" hint="What I reach for.">
+        <dl className="skills">
+          {A.professional.skills.map((g) => (
+            <div key={g.group} className="skill-row"><dt>{g.group}</dt><dd><Tags items={g.items} /></dd></div>
+          ))}
+        </dl>
+      </Sec>
     </Page>
   )
 }
@@ -43,6 +63,7 @@ export function Work() {
   if (!w) return <NotFound />
   const s = section("professional")!
   const subprojects = subprojectsOf(w)
+  const { platform, challenges, learned, hindsight } = w as Work & Extra
   const details = ([["Role", w.role], ["Period", w.period], ["Systems", w.systems.join(" · ")]] as [string, string][]).filter(([, v]) => v)
   let n = 0
 
@@ -51,7 +72,7 @@ export function Work() {
       <Crumbs trail={[{ href: "/professional", label: s.title }, { label: w.title }]} />
       <div className="ex-head">
         <header className="page-head">
-          <p className="catalogue">ARCHIVE <b>{w.catalogue}</b> , {w.title.toUpperCase()}</p>
+          <p className="catalogue">ARCHIVE <b>{w.catalogue}</b> · {w.title.toUpperCase()}</p>
           <h1 className="page-title">{w.title}</h1>
           {w.org !== w.title && <p className="ex-sub">{w.org}</p>}
           {w.period && <p className="ex-years">{w.period}</p>}
@@ -79,6 +100,16 @@ export function Work() {
           </div>
         </Sec>
       )}
+      {platform && <Sec n={++n} label="The platform" hint="What the team built together."><MarkedList items={platform} /></Sec>}
+      {challenges && (
+        <Sec n={++n} label="The hard parts">
+          <div className="problems">
+            {challenges.map((c) => <div className="problem" key={c.problem}><span className="p">{c.problem}</span><span className="a">{c.approach}</span></div>)}
+          </div>
+        </Sec>
+      )}
+      {learned && <Sec n={++n} label="What I learned"><MarkedList items={learned} /></Sec>}
+      {hindsight && <Sec n={++n} label="In hindsight"><p className="prose">{hindsight}</p></Sec>}
       {w.systems.length > 0 && <Sec n={++n} label="Systems"><Tags items={w.systems} /></Sec>}
     </Page>
   )

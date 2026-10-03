@@ -1,5 +1,5 @@
 /* A small fig branch, drawn in ink. Eight figs, one in each section's
-   colour , every life this archive keeps , and one on the ground. */
+   colour, every life this archive keeps, and one on the ground. */
 import { A } from "@/lib/archive"
 
 // where each fig hangs (its stem) and a little tilt

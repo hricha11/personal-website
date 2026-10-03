@@ -40,4 +40,4 @@ A.sections.forEach((s) => {
   )
 })
 
-export const HOME_TITLE = `${A.owner} , an archive`
+export const HOME_TITLE = `${A.owner} · an archive`

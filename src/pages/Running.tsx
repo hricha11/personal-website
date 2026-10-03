@@ -56,10 +56,10 @@ export default function Running() {
     <Page className="run-page">
       <Crumbs trail={[{ label: s.title }]} />
       <header className="page-head">
-        <p className="catalogue">ARCHIVE <b>{s.catalogue}</b> , RUNNING</p>
+        <p className="catalogue">ARCHIVE <b>{s.catalogue}</b> · RUNNING</p>
         <p className="ex-exhibit">EXHIBIT {s.catalogue}</p>
         <h1 className="page-title">Running</h1>
-        <p className="ex-years">{r.since},PRESENT</p>
+        <p className="ex-years">SINCE {r.since}</p>
         <p className="run-quote">An ongoing experiment in consistency.</p>
         <span className="margin-note" aria-hidden="true">slow is still running</span>
       </header>

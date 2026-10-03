@@ -14,7 +14,7 @@ export default function Journaling() {
     <Page className="journal-page">
       <Crumbs trail={[{ label: s.title }]} />
       <header className="page-head">
-        <p className="catalogue">ARCHIVE <b>{s.catalogue}</b> , A PERSONAL ARCHIVE</p>
+        <p className="catalogue">ARCHIVE <b>{s.catalogue}</b> · A PERSONAL ARCHIVE</p>
         <h1 className="page-title">My Love for <em>Journaling</em></h1>
         <p className="journal-intro">{j.intro.map((l) => <span key={l}>{l}</span>)}</p>
       </header>

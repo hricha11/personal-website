@@ -11,7 +11,7 @@ import {
 import { A, childHref, inWing } from "@/lib/archive"
 
 /* Arrow keys turn the pages (← back, → forward), anywhere in the book.
-   The visible corners live on each page's edge , see page-corners.tsx. */
+   The visible corners live on each page's edge, see page-corners.tsx. */
 export function PageKeys() {
   const { back, forward } = usePageTurn()
   useEffect(() => {
@@ -82,7 +82,7 @@ export function ArchiveIndex({ open, setOpen }: { open: boolean; setOpen: (o: bo
       className="archive-index sm:max-w-xl">
       <CommandInput placeholder="Search the archive…" />
       <CommandList className="max-h-[min(60vh,520px)]">
-        <CommandEmpty><span className="font-hand text-lg text-muted-foreground">nothing filed under that , yet</span></CommandEmpty>
+        <CommandEmpty><span className="font-hand text-lg text-muted-foreground">nothing filed under that, yet</span></CommandEmpty>
         <CommandGroup heading="Start here">
           <Row go={go} num={A.about.catalogue} title="About Me" desc="the contents" to="/about" />
         </CommandGroup>

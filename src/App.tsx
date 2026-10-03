@@ -12,7 +12,8 @@ import { Professional, Work } from "@/pages/Professional"
 // HIDDEN for now , see HIDDEN_SECTIONS.md
 // import Papers from "@/pages/Papers"
 import Books from "@/pages/Books"
-import Running from "@/pages/Running"
+// HIDDEN for now, see HIDDEN_SECTIONS.md
+// import Running from "@/pages/Running"
 // HIDDEN for now , see HIDDEN_SECTIONS.md
 // import Journaling from "@/pages/Journaling"
 import NotFound from "@/pages/NotFound"
@@ -85,7 +86,8 @@ function Shell() {
             <Route path="/papers" element={<Papers />} />
             <Route path="/papers/:id" element={<Papers />} /> */}
             <Route path="/books" element={<Books />} />
-            <Route path="/running" element={<Running />} />
+            {/* HIDDEN for now, see HIDDEN_SECTIONS.md
+            <Route path="/running" element={<Running />} /> */}
             {/* HIDDEN for now , see HIDDEN_SECTIONS.md
             <Route path="/journaling" element={<Journaling />} /> */}
             <Route path="*" element={<NotFound />} />

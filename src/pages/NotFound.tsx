@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <Page>
       <PageHead catalogue="000" name="Missing" title={<>Not in the <em>archive</em>.</>}
-        lede="This one fell before anyone could pick it , or it hasn’t grown yet. Both are common here." />
+        lede="This one fell before anyone could pick it, or it hasn’t grown yet. Both are common here." />
       <Link className="examine ink-link" to="/about">Back to the contents <span className="arrow">→</span></Link>
     </Page>
   )

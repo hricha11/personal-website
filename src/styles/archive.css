@@ -508,7 +508,13 @@ a:hover .arrow, button:hover .arrow { transform: translateX(3px); }
   background-image: repeating-linear-gradient(-45deg, transparent 0 9px, rgba(30, 30, 28, 0.045) 9px 10px);
   display: grid; place-items: center; overflow: hidden;
 }
-.plate-frame img { width: 100%; height: 100%; object-fit: cover; }
+.plate-frame:has(img) { background: #fff; }
+.plates:has(> .plate:only-child) { grid-template-columns: 1fr; }
+.plate:only-child .plate-frame { aspect-ratio: auto; }
+.plate:only-child .plate-frame img { height: auto; }
+.plate-frame a { display: block; width: 100%; height: 100%; cursor: zoom-in; }
+.plate-frame img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+.plate-frame a:hover img { transform: scale(1.03); }
 .plate-frame .pending { font-family: var(--hand); font-size: 1.2rem; color: var(--grey); }
 .plate figcaption { display: flex; gap: 10px; font-size: 13px; color: var(--grey); margin-top: 0.6rem; line-height: 1.4; }
 .plate figcaption .mono { font-size: 11px; letter-spacing: 0.1em; color: var(--ink-2); white-space: nowrap; padding-top: 2px; }
@@ -1401,3 +1407,15 @@ body { font-weight: 400; }
 .ms-knob { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); transition: translate 0.3s var(--ease-out); }
 .master-switch.on .ms-track { background: #E9C24A; }
 .master-switch.on .ms-knob { translate: 16px 0; }
+
+/* Professional Life: education and toolkit */
+.edu { list-style: none; margin: 0; padding: 0; }
+.edu-row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 1rem; padding: 0.7rem 0; border-bottom: 1px dotted var(--rule-strong); }
+.edu-when { grid-row: span 2; font-family: var(--mono); font-size: 12px; color: var(--grey); padding-top: 4px; }
+.edu-what { font-family: var(--display); font-weight: 600; font-size: 1.45rem; line-height: 1.15; color: var(--ink); }
+.edu-where { font-size: 14.5px; color: var(--ink-2); }
+.skills { margin: 0; display: grid; gap: 0.7rem; }
+.skill-row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: 1rem; align-items: start; }
+.skill-row dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); padding-top: 4px; }
+.skill-row dd { margin: 0; }
+@media (max-width: 560px) { .edu-row, .skill-row { grid-template-columns: 1fr; } .edu-when { grid-row: auto; } }

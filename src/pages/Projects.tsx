@@ -14,6 +14,11 @@ type Maybe = {
   model?: string
   results?: { note: string; rows: { label: string; value: number }[] }
   plates?: { caption: string; src: string }[]
+  problem?: string
+  training?: readonly (readonly [string, string])[] | string[][]
+  decisions?: { decision: string; why: string }[]
+  challenges?: string[]
+  next?: string[]
 }
 
 export function Projects() {
@@ -53,7 +58,7 @@ export function Exhibit() {
   useTitle(p?.title ?? "Not in the archive")
   if (!p) return <NotFound />
   const s = section("projects")!
-  const { dataset, model, results, plates } = p as Maybe
+  const { dataset, model, results, plates, problem, training, decisions, challenges, next } = p as Maybe
   let n = 0
 
   return (
@@ -61,7 +66,7 @@ export function Exhibit() {
       <Crumbs trail={[{ href: "/projects", label: s.title }, { label: p.title }]} />
       <div className="ex-head">
         <header className="page-head">
-          <p className="catalogue">ARCHIVE <b>{p.catalogue}</b> , {p.title.toUpperCase()}</p>
+          <p className="catalogue">ARCHIVE <b>{p.catalogue}</b> · {p.title.toUpperCase()}</p>
           <p className="ex-exhibit">EXHIBIT {p.exhibit}</p>
           <h1 className="page-title">{p.title}</h1>
           <p className="ex-sub">{p.subtitle}</p>
@@ -72,6 +77,7 @@ export function Exhibit() {
         </aside>
       </div>
 
+      {problem && <Sec n={++n} label="The problem"><p className="question">{problem}</p></Sec>}
       <Sec n={++n} label="What I built"><MarkedList items={p.built} /></Sec>
       <Sec n={++n} label="Architecture">
         <div className="arch-wrap">
@@ -83,7 +89,7 @@ export function Exhibit() {
               </span>
             ))}
           </div>
-          <p className="arch-cap">FIG. {n} , {p.title}, end to end</p>
+          <p className="arch-cap">FIG. {n} · {p.title}, end to end</p>
         </div>
       </Sec>
       {dataset && (
@@ -92,6 +98,11 @@ export function Exhibit() {
         </Sec>
       )}
       {model && <Sec n={++n} label="The model"><p className="prose">{model}</p></Sec>}
+      {training && (
+        <Sec n={++n} label="Training setup">
+          <dl className="spec">{training.map(([k, v]) => <span key={k} className="contents"><dt>{k}</dt><dd>{v}</dd></span>)}</dl>
+        </Sec>
+      )}
       {results && (
         <Sec n={++n} label="Results">
           <ul className="results">
@@ -106,6 +117,15 @@ export function Exhibit() {
           <p className="results-note">{results.note}</p>
         </Sec>
       )}
+      {decisions && (
+        <Sec n={++n} label="Key decisions" hint="Why this, and not that.">
+          <div className="problems">
+            {decisions.map((d) => <div className="problem" key={d.decision}><span className="p">{d.decision}</span><span className="a">{d.why}</span></div>)}
+          </div>
+        </Sec>
+      )}
+      {challenges && <Sec n={++n} label="The hard parts"><MarkedList items={challenges} /></Sec>}
+      {next && <Sec n={++n} label="What I’d do next"><MarkedList items={next} /></Sec>}
       {plates && <Sec n={++n} label="Selected artifacts"><Plates items={plates} /></Sec>}
       <Sec n={++n} label="Materials"><Tags items={p.materials} /></Sec>
     </Page>

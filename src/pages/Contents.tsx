@@ -60,7 +60,7 @@ export default function Contents() {
     <div ref={root} className="spread-wrap">
       <div className="spread">
         <section className="sheet sheet-l" aria-label={`${work.title} wing`}>
-          <header className="sheet-head"><span>ARCHIVE {A.about.catalogue} , ABOUT ME</span></header>
+          <header className="sheet-head"><span>ARCHIVE {A.about.catalogue} · ABOUT ME</span></header>
           <h1 className="nb-name">Index</h1>
           <p className="nb-tag">{A.tagline}</p>
           <WingHead w={work} />
@@ -94,7 +94,7 @@ export default function Contents() {
         </section>
         <PageCorners />
       </div>
-      <p className="spread-hint" aria-hidden="true">pick any line to turn to that page , or press <kbd className="font-mono text-[0.8em] not-italic">Ctrl K</kbd> to search</p>
+      <p className="spread-hint" aria-hidden="true">pick any line to turn to that page, or press <kbd className="font-mono text-[0.8em] not-italic">Ctrl K</kbd> to search</p>
     </div>
   )
 }

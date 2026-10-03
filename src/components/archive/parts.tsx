@@ -44,7 +44,7 @@ export function PageHead({ trail = [], catalogue, name, title, lede, note, child
     <>
       <Crumbs trail={trail} />
       <header className="page-head">
-        <p className="catalogue">ARCHIVE <b>{catalogue}</b> , {name.toUpperCase()}</p>
+        <p className="catalogue">ARCHIVE <b>{catalogue}</b> · {name.toUpperCase()}</p>
         <h1 className="page-title">{title}</h1>
         {lede && <p className="page-lede">{lede}</p>}
         {children}
@@ -120,7 +120,9 @@ export function Plates({ items }: { items: readonly { caption: string; src: stri
       {items.map((p, i) => (
         <figure className="plate" key={p.caption}>
           <div className="plate-frame">
-            {p.src ? <img src={p.src} alt={p.caption} loading="lazy" /> : <span className="pending">image to be added</span>}
+            {p.src
+              ? <a href={p.src} target="_blank" rel="noreferrer" aria-label={`Open full size: ${p.caption}`}><img src={p.src} alt={p.caption} loading="lazy" /></a>
+              : <span className="pending">image to be added</span>}
           </div>
           <figcaption><span className="mono">PLATE {ROMAN[i].toUpperCase()}</span><span>{p.caption}</span></figcaption>
         </figure>

@@ -1,13 +1,13 @@
 /* ==========================================================================
-   THE ARCHIVE , content
+   THE ARCHIVE · content
    --------------------------------------------------------------------------
    Everything written on the site lives in this file. Edit freely; the pages
    in src/pages only read from here.
 
-   Certifications, projects, professional life and achievements come from
-   the résumé, which is the source of truth. Books, running, papers and the
-   journal are still DRAFTS written to show the shape of each section ,
-   replace them with the real thing before publishing.
+   Certifications, projects, professional life, education, skills and
+   achievements come from the résumé, which is the source of truth. Books
+   are Hricha’s own. Running, papers and the journal are hidden: their
+   content below is still DRAFT (see HIDDEN_SECTIONS.md).
    ========================================================================== */
 
 export const ARCHIVE = {
@@ -25,14 +25,14 @@ export const ARCHIVE = {
     { label: "GitHub", handle: "hricha11", href: "https://github.com/hricha11" },
     { label: "Instagram", handle: "@hricha_11", href: "https://www.instagram.com/hricha_11/" },
   ],
-  lastUpdated: "2026-09-28",
+  lastUpdated: "2026-10-03",
 
   /* ---------------------------------------------------------------------- */
   about: {
     catalogue: "001",
     short: [
-      "I’m a software engineer who learns by building things slightly too hard for me.",
-      "Off screen, I run, read slowly, and write things down. This archive is where it all meets.",
+      "I’m a software engineer at HomeFirst Finance in Mumbai, and I learn by building things slightly too hard for me.",
+      "I want to work where software engineering meets intelligent systems. Off screen, I run, read slowly, and write things down. This archive is where it all meets.",
     ],
   },
 
@@ -84,7 +84,7 @@ export const ARCHIVE = {
     // ---- Wing B · Personal
     {
       id: "did-right", wing: "life", catalogue: "030", title: "Things I Think I Did Right", color: "var(--ink-sage)", petal: "var(--petal-mint)",
-      desc: "Decisions I’m glad I made , and, for the record, the prizes.",
+      desc: "For the record: the prizes, roles and milestones so far.",
       note: "the honest list",
     },
     {
@@ -92,11 +92,12 @@ export const ARCHIVE = {
       desc: "A small library inside the museum.",
       note: "no star ratings here",
     },
-    {
-      id: "running", wing: "life", catalogue: "041", title: "Running", color: "var(--ink-terracotta)", petal: "var(--petal-peach)",
-      desc: "An ongoing experiment in consistency.",
-      note: "slow, mostly",
-    },
+    // HIDDEN until real running data is in, see HIDDEN_SECTIONS.md
+    // {
+    //   id: "running", wing: "life", catalogue: "041", title: "Running", color: "var(--ink-terracotta)", petal: "var(--petal-peach)",
+    //   desc: "An ongoing experiment in consistency.",
+    //   note: "slow, mostly",
+    // },
     // HIDDEN for now , see HIDDEN_SECTIONS.md to bring it back
     // {
     //   id: "journaling", wing: "life", catalogue: "048", title: "My Love for Journaling", color: "var(--ink-rose)", petal: "var(--petal-mauve)",
@@ -152,8 +153,38 @@ export const ARCHIVE = {
         subtitle: "AI-powered agriculture system",
         materials: ["YOLOv8", "Faster R-CNN", "Grad-CAM", "FastAPI", "Python"],
         summary: "A weed detection system: a YOLOv8 model served through a FastAPI inference service and a mobile app that shows each detection with a bounding box and confidence score.",
+        problem: "Weeds cause around 15–20% of crop yield loss every year, and controlling them costs farmers roughly ₹2,000–4,000 per acre. Can a model spot weeds in a field photo quickly and reliably enough to help?",
+        training: [
+          ["Preprocessing", "corrupted or noisy images removed, resized to 640 × 640, pixels normalised to 0–1, YOLO-format labels"],
+          ["Augmentation", "horizontal and vertical flips, rotation, scaling, brightness, cropping"],
+          ["Hardware", "Google Colab, single NVIDIA T4 GPU"],
+          ["Batch size", "16"],
+          ["Epochs", "20, with early stopping (patience 15)"],
+          ["Loss", "box regression (CIoU) + objectness + classification (binary cross-entropy)"],
+          ["Confidence threshold", "about 0.4–0.6, where the F1 curve peaks"],
+        ],
+        decisions: [
+          { decision: "YOLOv8n over YOLOv8m and Faster R-CNN", why: "Faster R-CNN was the most precise (92%), but took about 120 ms per image; YOLOv8m took 21.8 ms. YOLOv8n ran at 4 ms with close to the same precision and recall, which makes it the one that can live on a phone or an edge device." },
+          { decision: "Grad-CAM on every detection", why: "A farmer has no reason to trust a box on a photo. Heatmaps show the model is looking at leaf shape, edges and veins, not the soil, and they help us catch false positives." },
+          { decision: "Favour recall over precision", why: "In a field, a missed weed costs more than a false alarm, so the threshold leans towards catching every weed." },
+          { decision: "Roboflow instead of hand-rolled preprocessing", why: "Consistent formats and augmentation across iterations, without error-prone manual conversion." },
+        ],
+        challenges: [
+          "Weeds and crops can look almost identical.",
+          "The same plant looks different at different growth stages.",
+          "Lighting, soil and weather change every photo.",
+          "Class imbalance, handled with augmentation and class-weighted loss.",
+          "Dense clusters of overlapping weeds, where single detections are still sometimes missed.",
+        ],
+        next: [
+          "Export to ONNX / TensorRT and run on a Jetson or a Raspberry Pi with a Coral TPU, for drones and field cameras.",
+          "Ship a quantized model inside the mobile app so it works offline.",
+          "Retrain for other crops, such as maize or wheat, with transfer learning.",
+          "Test on our own field dataset, photographed directly in fields, to close the gap between Weed25 and real conditions. Collection is underway.",
+          "Add SHAP and LIME next to Grad-CAM, and spatial attention for dense weed clusters.",
+        ],
         built: [
-          "Developed a weed detection pipeline on the Weed25 dataset, with an 80:10:10 train–validation–test split for training and evaluation.",
+          "Developed a weed detection pipeline on the Weed25 dataset: 25 weed species, 7,656 training and 1,897 validation images.",
           "Performed hyperparameter tuning and benchmarked YOLOv8n, YOLOv8m and Faster R-CNN.",
           "Selected YOLOv8n for deployment, with real-time inference at 4 ms per image, and integrated Grad-CAM to visualise where the model looks.",
           "Built a FastAPI inference service exposing REST APIs for image upload and real-time predictions, and integrated it with a mobile app.",
@@ -167,23 +198,32 @@ export const ARCHIVE = {
         ],
         dataset: [
           ["Dataset", "Weed25"],
-          ["Size", "9,000+ field images"],
-          ["Classes", "25 weed classes"],
-          ["Split", "80 : 10 : 10 train / validation / test"],
+          ["Source", "Roboflow, photos taken in natural light across field conditions"],
+          ["Size", "9,553 images (7,656 training · 1,897 validation)"],
+          ["Classes", "25 weed species"],
+          ["Split", "80 : 20 train / validation"],
         ],
         model: "Benchmarked YOLOv8n, YOLOv8m and Faster R-CNN with hyperparameter tuning. YOLOv8n was selected for deployment for its accuracy and real-time speed (4 ms per image), with Grad-CAM explainability on top.",
         results: {
           note: "YOLOv8n, the deployed model. Inference runs in real time at 4 ms per image.",
           rows: [
-            { label: "mAP@0.5", value: 91.1 },
             { label: "Recall", value: 88.3 },
             { label: "F1-score", value: 88.0 },
             { label: "Precision", value: 87.8 },
+            { label: "mAP@0.5", value: 58.0 },
           ],
         },
         plates: [
-          { caption: "Detection result with bounding boxes and confidence scores", src: "" },
-          { caption: "Grad-CAM attention map", src: "" },
+          { caption: "System architecture: from field photo to detection and explanation", src: "/img/agrolens/architecture.png" },
+          { caption: "YOLOv8n predictions: Asiatic Smartweed and Alligatorweed, with confidence scores", src: "/img/agrolens/predictions-smartweed.jpg" },
+          { caption: "YOLOv8n predictions: Alligatorweed under changing light and clutter", src: "/img/agrolens/predictions-alligatorweed.jpg" },
+          { caption: "Grad-CAM: the model looks at the central leaf structure, 74% sure of Alligatorweed", src: "/img/agrolens/gradcam-a.jpg" },
+          { caption: "Grad-CAM: still finding the weed against bare soil and debris", src: "/img/agrolens/gradcam-b.jpg" },
+          { caption: "Grad-CAM: leaf edges and veins pick out Black nightshade", src: "/img/agrolens/gradcam-c.jpg" },
+          { caption: "Grad-CAM: a dense patch of overlapping weeds, each found", src: "/img/agrolens/gradcam-d.jpg" },
+          { caption: "Training and validation curves over 20 epochs", src: "/img/agrolens/training-curves.png" },
+          { caption: "Precision–recall curve, per weed class and on average", src: "/img/agrolens/precision-recall.png" },
+          { caption: "F1–confidence curve: the best threshold sits around 0.4–0.6", src: "/img/agrolens/f1-confidence.png" },
         ],
       },
       {
@@ -194,6 +234,23 @@ export const ARCHIVE = {
         subtitle: "Real-time finance engine + forecasting",
         materials: ["Spring Boot", "React", "MySQL", "Prophet", "JWT"],
         summary: "A personal finance engine: secure APIs for budgets and goals, Prophet forecasts of future spending, and live analytics dashboards.",
+        problem: "Money moves in many small pieces: income, bills, budgets, goals. I wanted one place that keeps the balance honest and shows where spending is heading.",
+        decisions: [
+          { decision: "JWT, stateless authentication", why: "No sessions stored on the server, so it scales simply. Every token carries the userId, and every API checks it against the resource owner, which keeps each user’s data isolated." },
+          { decision: "A relational database (MySQL)", why: "Transactions, budgets and goals are structured and related, and ACID matters for money. Each user has many transactions and goals, linked by userId." },
+          { decision: "Atomic balance updates", why: "Each transaction insert and its balance update run inside a single MySQL transaction, so two transactions arriving at once can’t leave the balance wrong." },
+          { decision: "Prophet in its own Python service", why: "Spending is aggregated into a time series (ds, y) and sent to Prophet, which is simple and handles seasonality well on small datasets." },
+        ],
+        challenges: [
+          "Keeping the real-time balance correct under concurrent writes.",
+          "Fetching large transaction histories quickly: pagination, indexes on userId and timestamp, and income / expense filters.",
+          "Validating every input (@Valid, a central @ControllerAdvice) and returning clear status codes: 400, 401, 404.",
+          "Hashing and salting passwords, and checking every request against the token’s userId.",
+        ],
+        next: [
+          "Cache dashboard summaries and run forecasting asynchronously, so a slow model never blocks the API.",
+          "Scale the API horizontally behind a load balancer, with read replicas for the database.",
+        ],
         built: [
           "Built secure REST APIs for budget tracking and financial goal management, with JWT-based user data isolation.",
           "Integrated Prophet-based forecasting pipelines, trained on historical spending patterns, to predict future expenses.",
@@ -205,6 +262,9 @@ export const ARCHIVE = {
           { label: "MySQL", note: "budgets · goals · spending" },
           { label: "Prophet", note: "expense forecasting" },
         ],
+        plates: [
+          { caption: "The dashboard: monthly income, allocations, savings, a budget breakdown by category, goals and recent transactions", src: "/img/finscope/dashboard.png" },
+        ],
       },
       {
         id: "freshpress",
@@ -214,6 +274,20 @@ export const ARCHIVE = {
         subtitle: "Multi-source news aggregator",
         materials: ["React", "Express", "RSS Parser", "SendGrid"],
         summary: "A news aggregator that pulls from four Indian newspapers in under a minute and emails a daily digest.",
+        problem: "Information overload: to compare what different papers say, you open four apps. Aggregators like Inshorts summarise and hide the source; I wanted the source to come first.",
+        decisions: [
+          { decision: "RSS over news APIs or scraping", why: "News APIs are rate-limited, paid, or missing for many publishers; scraping breaks easily and sits in a legal grey zone. RSS is free, legal, simple and has no rate limit." },
+          { decision: "Source-first design", why: "Filtering by newspaper lets readers compare what each major source is reporting, and in what tone." },
+          { decision: "React + Tailwind, not Next.js", why: "There was no need for server-side rendering or SEO-heavy pages, and utility-first styling kept the UI fast to build and consistent." },
+          { decision: "Vercel for the frontend, Render for the API", why: "Every push to main redeploys automatically: Vercel in seconds, Render in minutes. Secrets live in each platform’s environment variables, never in Git." },
+        ],
+        challenges: [
+          "Normalising feeds that format the same fields differently. rss-parser turns raw XML into consistent JSON: title, summary, link, source, pubDate.",
+          "Keeping the digest modular: news fetching and email sending are separate services, and the /send-digest route only orchestrates them.",
+        ],
+        next: [
+          "Fetch feeds in the background every 30–60 seconds with node-cron and serve them from a Redis cache.",
+        ],
         built: [
           "Built an RSS ingestion pipeline aggregating TOI, Indian Express, LiveMint and The Hindu with under 60 s latency.",
           "Integrated SendGrid email digests to deliver daily news summaries.",
@@ -225,6 +299,9 @@ export const ARCHIVE = {
           { label: "React", note: "source filters · previews" },
           { label: "SendGrid", note: "daily email digests" },
         ],
+        plates: [
+          { caption: "The front page: live headlines from The Hindu, Indian Express, Times of India and LiveMint, filterable by source", src: "/img/freshpress/home.png" },
+        ],
       },
     ],
   },
@@ -232,17 +309,38 @@ export const ARCHIVE = {
   /* ---------------------------------------------------------------------- */
   professional: {
     lede: "Filed in the order they happened.",
+    education: [
+      { what: "B.E. Computer Engineering", where: "Mumbai University", detail: "CGPA 8.91 / 10", when: "2022 – 2026" },
+      { what: "HSC", where: "CBSE", detail: "80.4%", when: "2022" },
+      { what: "SSC", where: "ICSE", detail: "95.6%", when: "2020" },
+    ],
+    skills: [
+      { group: "Languages", items: ["C++", "Python", "JavaScript"] },
+      { group: "ML", items: ["YOLO", "CNNs", "Grad-CAM", "OpenCV", "Prophet"] },
+      { group: "Backend", items: ["Node.js", "Express.js", "Spring Boot", "Socket.IO", "MongoDB", "MySQL"] },
+      { group: "Frontend", items: ["React", "HTML", "CSS"] },
+      { group: "Cloud", items: ["AWS", "Docker", "Salesforce"] },
+      { group: "Tools", items: ["Git", "Postman", "Vercel", "Render"] },
+      { group: "Core CS", items: ["DSA", "OOP", "DBMS"] },
+    ],
     items: [
       {
         id: "tcet-erp",
         catalogue: "023",
         title: "TCET Open Source ERP",
         org: "TCET Open Source",
-        period: "",
+        period: "First year of engineering",
         role: "Backend team",
-        systems: [] as string[],
-        what: "",
-        built: [] as string[],
+        systems: ["Node.js", "MongoDB", "Git"],
+        what: "My first real codebase: the college’s open-source ERP, built by students.",
+        built: [
+          "Worked on a modular backend, including bulk attendance.",
+          "Optimised MongoDB queries.",
+        ],
+        learned: [
+          "I walked in knowing basic JavaScript and walked out understanding version control, maintainers and pull requests, and cross-team collaboration.",
+          "Write modular code, keep Git discipline, and document clearly, so others can understand and extend your work.",
+        ],
       },
       {
         id: "chrysalis",
@@ -251,8 +349,19 @@ export const ARCHIVE = {
         org: "Chrysalis Technosoft",
         period: "Mar 2025 – Jun 2025",
         role: "Web Development Intern",
-        systems: ["Node.js", "JWT", "Socket.IO"],
-        what: "Backend services for Job247.",
+        systems: ["Node.js", "Express", "MongoDB", "JWT", "Socket.IO"],
+        what: "Job247, a MERN hiring platform connecting recruiters and candidates. I worked on its backend.",
+        platform: [
+          "A job board built from scratch by a small team over a three-month internship: TypeScript, React, Node.js / Express, MongoDB and Socket.IO.",
+          "Three roles (candidate, recruiter, admin) with role-based access.",
+          "A tiered verification system for recruiters, based on email domain and company details; higher tiers unlock features like bulk job posting.",
+          "Bulk job upload from CSV / Excel files, resume uploads, and pattern-based moderation that flags suspicious job posts for admin review.",
+        ],
+        challenges: [
+          { problem: "Three months, and more good ideas than time", approach: "We cut down to the core features by asking two questions: would users immediately notice this missing, and does it give us an edge? That delivered a working platform with REST APIs, dashboards and role-based access on time." },
+          { problem: "Usability versus feasibility", approach: "Listen to every idea, then agree on a simpler first version with a plan to grow it later." },
+        ],
+        hindsight: "I’d have prioritised resume parsing. It didn’t seem essential then, but it was a gateway to so much: skill extraction, automated matching.",
         built: [
           "Built backend services for Job247 with JWT-based authentication, email verification and role-based authorization.",
           "Implemented Socket.IO real-time channels for instant recruiter–candidate updates, reducing latency.",
@@ -262,13 +371,37 @@ export const ARCHIVE = {
         id: "hhfc",
         catalogue: "021",
         title: "All HHFC projects",
-        org: "HHFC",
-        period: "",
-        role: "",
-        systems: ["Logistic Regression"],
-        what: "",
+        org: "HomeFirst Finance Company India Ltd.",
+        period: "Jan 2026 – Present",
+        role: "Software Engineer",
+        systems: ["Salesforce", "Apex", "SOQL", "Playwright", "TypeScript", "LLMs", "Logistic Regression"],
+        what: "Four projects so far at HomeFirst Finance: UI test automation, test-data automation, access auditing, and an in-house loan origination system.",
         built: [] as string[],
         subprojects: [
+          {
+            title: "LMS UI Test Automation",
+            points: [
+              "Built an independent, black-box Playwright + TypeScript suite for the Loan Management System’s Salesforce screens: about 560 test cases across 40 specs, in 14 stages from masters and collateral through contracts, schedules, LTV, approval, disbursal, accrual and billing, payments, delinquency and closure.",
+              "Mirrored the QA workbook exactly (one folder per stage, one spec per module, one test step per line), with scripts that check the tests against the sheet and write each run’s results back into it.",
+              "Wrote an end-to-end flow that takes a single loan through its whole life: contract, schedule, approval, partial disbursals and part payments, Early-EMI, full disbursal and closure, checking amounts and the repayment schedule after every step.",
+              "Made it safe by design: it runs only against sandbox orgs and refuses production, and nothing saves data unless explicitly allowed for a dedicated test loan; blocked tests report exactly why.",
+              "Organised it with page objects for 24 screens and shared helpers for EMI and interest maths, disbursals and LTV.",
+            ],
+          },
+          {
+            title: "Test Data Generator",
+            points: [
+              "Engineered an Apex-based test-data automation framework that generates dependency-aware datasets across 20+ objects, streamlining test-data generation and execution.",
+              "Designed an LLM-powered layer that turns a testing requirement into an executable data-generation configuration.",
+            ],
+          },
+          {
+            title: "Security Control Center",
+            points: [
+              "Designed a centralised access-control auditing framework that runs periodic org-wide scans.",
+              "Used dynamic SOQL on metadata to resolve each user’s effective permissions accurately, giving clear visibility into who can access what.",
+            ],
+          },
           {
             title: "Loan Origination System",
             points: [
@@ -284,7 +417,7 @@ export const ARCHIVE = {
 
   /* ---------------------------------------------------------------------- */
   papers: {
-    lede: "Papers I’ve read properly , slowly, with a pencil. The notes are more about what changed in my head than about the paper itself.",
+    lede: "Papers I’ve read properly, slowly, with a pencil. The notes are more about what changed in my head than about the paper itself.",
     items: [
       {
         id: "mohanty-2016",
@@ -329,7 +462,7 @@ export const ARCHIVE = {
         year: 2015, venue: "CVPR", topic: "Computer vision",
         why: "Everything I read referenced it. I wanted to understand why.",
         core: "Let layers learn a residual on top of an identity shortcut, which makes very deep networks trainable.",
-        insight: "Sometimes the breakthrough is making the easy thing , doing nothing , easy for the network.",
+        insight: "Sometimes the breakthrough is making the easy thing, doing nothing, easy for the network.",
         changed: "Simple structural ideas can matter more than clever new components.",
         questions: "Why do skip connections help optimisation so much? I understand the story, not the proof.",
         related: ["agnolense"],
@@ -342,7 +475,7 @@ export const ARCHIVE = {
         why: "To understand the architecture behind the tools I use every day.",
         core: "Replace recurrence entirely with attention, so every token can look at every other token in parallel.",
         insight: "Removing a constraint (sequential processing) unlocked scale more than adding anything did.",
-        changed: "I stopped thinking of attention as mysterious. It’s a weighted lookup , a very well-placed one.",
+        changed: "I stopped thinking of attention as mysterious. It’s a weighted lookup, a very well-placed one.",
         questions: "What are we losing by making everything attend to everything?",
         related: [],
       },
@@ -364,7 +497,7 @@ export const ARCHIVE = {
         authors: "Sean J. Taylor, Benjamin Letham",
         year: 2017, venue: "The American Statistician", topic: "Forecasting",
         why: "After my LSTM lost to a baseline, I wanted to understand what good forecasting actually looks like.",
-        core: "A decomposable model , trend, seasonality, holidays , that analysts can understand and adjust.",
+        core: "A decomposable model, trend, seasonality, holidays, that analysts can understand and adjust.",
         insight: "A forecast people can reason about is worth more than a slightly better one they can’t.",
         changed: "Interpretability is a feature, especially for personal data.",
         questions: "Where’s the line between a model that’s simple enough to trust and too simple to be useful?",
@@ -376,7 +509,7 @@ export const ARCHIVE = {
         authors: "Ravid Shwartz-Ziv, Amitai Armon",
         year: 2021, venue: "Information Fusion", topic: "Machine learning",
         why: "A sanity check after Finscope.",
-        core: "On many tabular datasets, gradient-boosted trees still outperform deep models , and they’re cheaper to tune.",
+        core: "On many tabular datasets, gradient-boosted trees still outperform deep models, and they’re cheaper to tune.",
         insight: "Choosing the tool for the data, not for the story you want to tell about the project.",
         changed: "“What’s the simplest thing that could work?” is now my first question.",
         questions: "Which properties of a dataset make deep learning worth it?",
@@ -388,7 +521,7 @@ export const ARCHIVE = {
         authors: "D. Sculley, Gary Holt, Daniel Golovin, et al.",
         year: 2015, venue: "NeurIPS", topic: "ML systems",
         why: "Agnolense’s training code was fine. Everything around it was a mess.",
-        core: "The model is a small box in the middle of a very large system , data pipelines, configuration, monitoring , and that’s where the debt accumulates.",
+        core: "The model is a small box in the middle of a very large system, data pipelines, configuration, monitoring, and that’s where the debt accumulates.",
         insight: "The famous diagram: the ML code is the tiny square in the middle.",
         changed: "I budget more time for the plumbing than the model now.",
         questions: "What does good ML hygiene look like for a one-person project?",
@@ -399,7 +532,7 @@ export const ARCHIVE = {
 
   /* ---------------------------------------------------------------------- */
   books: {
-    lede: "My shelf so far, in order. Notes will come book by book , if you’ve read one of these, I’d genuinely like to hear what you thought.",
+    lede: "My shelf so far, in order. Notes will come book by book, if you’ve read one of these, I’d genuinely like to hear what you thought.",
     // Title and author, plus category and genres where known. `cover` is the
     // spine colour, matched to the book's best-known edition , change freely.
     // `pages` and `height` (mm, trim size) size the spine in true proportion.
@@ -408,65 +541,65 @@ export const ARCHIVE = {
     // book, shown on its card when filled in: read ("2025-03"), note, key
     // ("the idea I kept thinking about"), stayed ("what stayed with me").
     items: [
-      { title: "The Diary of a Young Girl", author: "Anne Frank", cover: "#C2432F", pages: 352, height: 198, stayed: "Every time I read it, I notice different parts of her story. I first read it in 2020, stuck inside my own house , too young to understand what was happening in her world, or in mine. All I saw was her growing up, and her dreams. Now, knowing more about the fascist regime, it reads completely differently." },
+      { title: "The Diary of a Young Girl", author: "Anne Frank", cover: "#C2432F", pages: 352, height: 198, stayed: "Every time I read it, I notice different parts of her story. I first read it in 2020, stuck inside my own house, too young to understand what was happening in her world, or in mine. All I saw was her growing up, and her dreams. Now, knowing more about the fascist regime, it reads completely differently." },
       { title: "The Last Queen", author: "Chitra Banerjee Divakaruni", cover: "#7A1F2B", pages: 368, height: 216, stayed: "Beautiful writing, and such a fun way to learn the history of Punjab. I cried, I got furious, and I enjoyed every bit of it all the way through." },
-      { title: "Why I Am an Atheist and Other Works", author: "Bhagat Singh", cover: "#B3261E", pages: 120, height: 198, stayed: "It felt like an honour to meet someone so selfless, so much larger than life, through his own letters. A man of principle and nuance , he lived more in 23 years than I could find the courage to in aeons." },
-      { title: "The Forest of Enchantments", author: "Chitra Banerjee Divakaruni", category: "Fiction", genres: ["Mythological Fiction"], cover: "#1F4D3A", pages: 380, height: 222, stayed: "Lovely , I love fresh perspectives on the classics. Seeing Sita drawn so richly, as a princess trained in medicine and combat, gave me so much joy." },
-      { title: "Yesteryear", author: "Caro Claire Burke", cover: "#E8B8B0", pages: 336, height: 234, stayed: "Natalie never asked what she wanted, only what she should want. She measured the worst version of a modern woman’s life against the best version of a traditional one , and quietly edited parts of herself to fit the mould." },
+      { title: "Why I Am an Atheist and Other Works", author: "Bhagat Singh", cover: "#B3261E", pages: 120, height: 198, stayed: "It felt like an honour to meet someone so selfless, so much larger than life, through his own letters. A man of principle and nuance, he lived more in 23 years than I could find the courage to in aeons." },
+      { title: "The Forest of Enchantments", author: "Chitra Banerjee Divakaruni", category: "Fiction", genres: ["Mythological Fiction"], cover: "#1F4D3A", pages: 380, height: 222, stayed: "Lovely, I love fresh perspectives on the classics. Seeing Sita drawn so richly, as a princess trained in medicine and combat, gave me so much joy." },
+      { title: "Yesteryear", author: "Caro Claire Burke", cover: "#E8B8B0", pages: 336, height: 234, stayed: "Natalie never asked what she wanted, only what she should want. She measured the worst version of a modern woman’s life against the best version of a traditional one, and quietly edited parts of herself to fit the mould." },
       { title: "The Will to Change", author: "bell hooks", cover: "#C8553D", pages: 208, height: 210, stayed: "Loved it. The kind of book that widens your awareness and leaves you a little more empathetic." },
       { title: "The Liberation of Sita", author: "Volga", category: "Fiction", genres: ["Feminist Mythological Fiction"], cover: "#C0502A", pages: 144, height: 198, stayed: "A fresh, beautiful retelling that turns the women of the story into far more than props. I could spend hours discussing it." },
       { title: "Selfish, Shallow, and Self-Absorbed", author: "Meghan Daum", cover: "#F2E6DC", pages: 272, height: 210, stayed: "Most of the writers seem a little sad. Good food for thought.", read: "2026-06", highlights: [{ text: "People who want children are all alike. People who don’t want children don’t want them in their own ways.", page: 6 }, { text: "ricocheted", page: 8 }, { text: "We would gape, shocked that she didn’t consider us all a single being, like a grove of aspens is said to be. Then we would resume our tugging.", page: 14 }, { text: "I’m not sure my life needs redemption.", page: 74 }, { text: "The perfect life, the perfect lie … is one which prevents you from doing that which you would ideally have done (painted, say, or written unpublishable poetry) but which, in fact, you have no wish to do. People need to feel that they have been…", page: 158 }] },
-      { title: "The Bell Jar", author: "Sylvia Plath", category: "Fiction", genres: ["Literary Fiction", "Psychological Classic"], cover: "#22333B", pages: 244, height: 198, stayed: "Who am I to rate her writing? Calling it relatable is the worst thing you can say about your mental health , but it was. So little has truly changed; the women who came before me felt this too, and made it art." },
+      { title: "The Bell Jar", author: "Sylvia Plath", category: "Fiction", genres: ["Literary Fiction", "Psychological Classic"], cover: "#22333B", pages: 244, height: 198, stayed: "Who am I to rate her writing? Calling it relatable is the worst thing you can say about your mental health, but it was. So little has truly changed; the women who came before me felt this too, and made it art." },
       { title: "Four Thousand Weeks", author: "Oliver Burkeman", cover: "#E9B949", pages: 288, height: 216, stayed: "Maybe we don’t really understand what “life is short” means." },
-      { title: "The Housemaid", author: "Freida McFadden", category: "Thriller", genres: ["Psychological Thriller", "Domestic Suspense"], cover: "#2B2B2E", pages: 336, height: 198, stayed: "The twist is amazing , and I loved the moral greyness of every single character." },
-      { title: "The Secret", author: "Rhonda Byrne", cover: "#C9A874", pages: 198, height: 229, stayed: "A thin line between manifesting and toxic positivity , if I can’t acknowledge what’s wrong, where do I begin? It did send me off to read about quantum physics, though." },
+      { title: "The Housemaid", author: "Freida McFadden", category: "Thriller", genres: ["Psychological Thriller", "Domestic Suspense"], cover: "#2B2B2E", pages: 336, height: 198, stayed: "The twist is amazing, and I loved the moral greyness of every single character." },
+      { title: "The Secret", author: "Rhonda Byrne", cover: "#C9A874", pages: 198, height: 229, stayed: "A thin line between manifesting and toxic positivity, if I can’t acknowledge what’s wrong, where do I begin? It did send me off to read about quantum physics, though." },
       { title: "The Prophet", author: "Khalil Gibran", cover: "#3B2F2A", pages: 107, height: 198, read: "2026-03", highlights: [{ text: "Your pain is the breaking of the shell that encloses your understanding.", page: 21 }, { text: "For what is evil but good tortured by its own hunger and thirst?", page: 25 }, { text: "For life and death are one, even as the river and the sea are one.", page: 30 }] },
       { title: "Letters to a Young Poet", author: "Rainer Maria Rilke", cover: "#E8DFCB", pages: 96, height: 178, read: "2026-02", highlights: [{ text: "German", page: 6 }, { text: "You are looking to the outside, and that above all you should not be doing now.", page: 23 }, { text: "Go into yourself. Examine the reason that bids you to write; check whether it reaches its roots into the deepest region of your heart, admit to yourself whether you would die if it should be denied you to write.", page: 23 }, { text: "Then try, like the first human being, to say what you see and experience and love and lose.", page: 24 }, { text: "…depict your sadnesses and desires, passing thoughts and faith in some kind of beauty – depict all this with intense, quiet, humble sincerity and make use of whatever you find about you to express yourself, the images from your dreams and the things in your memory.", page: 24 }, { text: "And even if you were in a prison whose walls did not let any of the sounds of the world outside reach your senses – would you not have your childhood still, this marvellous, lavish source, this treasure-house of memories? Turn your attention towards that.", page: 24 }, { text: "…examine the depths from which your life springs; at its source you will find the answer to the question of whether you have to write.", page: 25 }, { text: "Irony: don’t let yourself be ruled by it, especially not in uncreative moments. In creative ones try to make use of it as one means among many to get a grasp on life.", page: 27 }, { text: "…if you fear your intimacy is growing too much, then turn towards great and serious subjects…", page: 27 }, { text: "To be an artist means: not to calculate and count; to grow and ripen like a tree which does not hurry the flow of its sap and stands at ease in the spring gales without fearing that no summer may follow.", page: 30 }, { text: "Live the questions for now. Perhaps then you will gradually, without noticing it, live your way into the answer, one distant day in the future.", page: 34 }, { text: "Love between one person and another: that is perhaps the hardest thing it is laid on us to do, the utmost, the ultimate trial and test, the work for which all other work is just preparation.", page: 46 }] },
-      { title: "Visual Intelligence", author: "Amy E. Herman", category: "Non-fiction", genres: ["Observation", "Critical Thinking"], cover: "#2F6FB0", pages: 320, height: 216, stayed: "Loved it. A new lens to see the world through , it made me appreciate art more.", read: "2026-02", key: "The world is full of magic things, patiently waiting for our senses to grow sharper.", highlights: [{ text: "…and which leg she is leading with.", page: 43 }, { text: "…height based on the comparison of the woman…", page: 43 }, { text: "To mine the most information possible, don’t close your eyes to anything, even someone else’s subjectivity.", page: 69 }, { text: "Yellow bruises typically indicate that at least eighteen hours have passed since the initial impact.", page: 94 }, { text: "Being an artist is not just about what happens when you are in the studio. The way you live, the people you choose to love and the way you love them…", page: 201 }, { text: "We must decide ahead of time which words we will use when communicating to make sure we are painting the most accurate picture possible.", page: 202 }, { text: "Instead of saying “never” or “always,” give a concrete, definitive number. If that isn’t possible, it is better to use “frequently” or “seldom.”", page: 204 }, { text: "Instead of saying “actually,” try using “I don’t believe . . .”", page: 204 }, { text: "Rather than calling an employee’s quarterly sales “terrible,” use indisputable facts: “You missed your sales quota by 30 percent.”", page: 205 }, { text: "Instead of “This doesn’t work for me,” use “What if you tried . . . ?” or better yet, include yourself in the team with “Why don’t we try . . . ?”", page: 205 }, { text: "…indigo or cobalt or ultramarine.", page: 205 }, { text: "They try to wing it, and find they’ve run out of material in 30 seconds. I’ve also seen shy people take the time to prepare and practice, and then deliver moving, funny, impactful messages in a way that influences audiences and advances their own agendas.", page: 213 }] },
+      { title: "Visual Intelligence", author: "Amy E. Herman", category: "Non-fiction", genres: ["Observation", "Critical Thinking"], cover: "#2F6FB0", pages: 320, height: 216, stayed: "Loved it. A new lens to see the world through, it made me appreciate art more.", read: "2026-02", key: "The world is full of magic things, patiently waiting for our senses to grow sharper.", highlights: [{ text: "…and which leg she is leading with.", page: 43 }, { text: "…height based on the comparison of the woman…", page: 43 }, { text: "To mine the most information possible, don’t close your eyes to anything, even someone else’s subjectivity.", page: 69 }, { text: "Yellow bruises typically indicate that at least eighteen hours have passed since the initial impact.", page: 94 }, { text: "Being an artist is not just about what happens when you are in the studio. The way you live, the people you choose to love and the way you love them…", page: 201 }, { text: "We must decide ahead of time which words we will use when communicating to make sure we are painting the most accurate picture possible.", page: 202 }, { text: "Instead of saying “never” or “always,” give a concrete, definitive number. If that isn’t possible, it is better to use “frequently” or “seldom.”", page: 204 }, { text: "Instead of saying “actually,” try using “I don’t believe . . .”", page: 204 }, { text: "Rather than calling an employee’s quarterly sales “terrible,” use indisputable facts: “You missed your sales quota by 30 percent.”", page: 205 }, { text: "Instead of “This doesn’t work for me,” use “What if you tried . . . ?” or better yet, include yourself in the team with “Why don’t we try . . . ?”", page: 205 }, { text: "…indigo or cobalt or ultramarine.", page: 205 }, { text: "They try to wing it, and find they’ve run out of material in 30 seconds. I’ve also seen shy people take the time to prepare and practice, and then deliver moving, funny, impactful messages in a way that influences audiences and advances their own agendas.", page: 213 }] },
       { title: "The Skincare Bible", author: "Anjali Mahto", cover: "#F1B7B5", pages: 368, height: 234 },
       { title: "How to Know a Person", author: "David Brooks", category: "Non-fiction", genres: ["Psychology", "Communication", "Relationships"], cover: "#E8D34A", pages: 320, height: 234 },
       { title: "The Subtle Art of Not Giving a F*ck", author: "Mark Manson", cover: "#E8662A", pages: 224, height: 216, stayed: "Its idea: care about the big things and you won’t have time for the small ones. I’m not sure that’s how it works." },
       { title: "Atlas of the Heart", author: "Brené Brown", category: "Non-fiction", genres: ["Psychology", "Emotional Intelligence"], cover: "#3E7C8C", pages: 336, height: 234, stayed: "As someone who feels a lot, I’d read this again and again." },
       { title: "The Art of Spending Money", author: "Morgan Housel", category: "Non-fiction", genres: ["Personal Finance", "Behavioral Economics"], cover: "#2E5E4E", pages: 240, height: 216, stayed: "A lot of food for thought, at just the right time in my life. I’d reread it." },
-      { title: "The Universe Has Your Back", author: "Gabrielle Bernstein", cover: "#9CC6E0", pages: 240, height: 216, stayed: "Too generic for me , half-formed ideas and anecdotes, with little research behind them." },
+      { title: "The Universe Has Your Back", author: "Gabrielle Bernstein", cover: "#9CC6E0", pages: 240, height: 216, stayed: "Too generic for me, half-formed ideas and anecdotes, with little research behind them." },
       { title: "Mastery", author: "Robert Greene", category: "Non-fiction", genres: ["Self-help", "Psychology", "Career"], cover: "#1C1C1C", pages: 352, height: 229 },
       { title: "How to Live", author: "Derek Sivers", cover: "#F2B134", pages: 128, height: 198 },
       { title: "Things My Son Needs to Know about the World", author: "Fredrik Backman", cover: "#3A6EA5", pages: 112, height: 190 },
       { title: "The Hard Questions", author: "Susan Piver", cover: "#EFE3D3", pages: 128, height: 178 },
       { title: "Simple Passion", author: "Annie Ernaux", cover: "#E9E7E2", pages: 64, height: 178 },
       { title: "Strange Pictures", author: "Uketsu", cover: "#D9D2C0", pages: 256, height: 198, stayed: "Eerie from start to finish, and cleverly plotted. The prose is a little plain, but it pulls you completely into its world." },
-      { title: "Three Thousand Stitches", author: "Sudha Murty", category: "Non-fiction", genres: ["Memoir", "Inspirational Essays"], cover: "#E5A13B", pages: 176, height: 198, stayed: "Calm and quietly moving. Her values, her empathy and her instinct to help those in need stayed with me , it feels like a small piece of Sudha Murty’s mind." },
+      { title: "Three Thousand Stitches", author: "Sudha Murty", category: "Non-fiction", genres: ["Memoir", "Inspirational Essays"], cover: "#E5A13B", pages: 176, height: 198, stayed: "Calm and quietly moving. Her values, her empathy and her instinct to help those in need stayed with me, it feels like a small piece of Sudha Murty’s mind." },
       { title: "The Agony of Eros", author: "Byung-Chul Han", cover: "#D24D57", pages: 72, height: 178 },
-      { title: "The Inheritance", author: "Trisha Sakhlecha", category: "Thriller", genres: ["Mystery", "Family Drama"], cover: "#5A1E24", pages: 336, height: 198, stayed: "A true page-turner , well written, full of turns I didn’t see coming. A must-read." },
+      { title: "The Inheritance", author: "Trisha Sakhlecha", category: "Thriller", genres: ["Mystery", "Family Drama"], cover: "#5A1E24", pages: 336, height: 198, stayed: "A true page-turner, well written, full of turns I didn’t see coming. A must-read." },
       { title: "The Little Prince", author: "Antoine de Saint-Exupéry", cover: "#2D5DA1", pages: 96, height: 190, shelf: "childhood" },
       { title: "Siddhartha", author: "Hermann Hesse", category: "Fiction", genres: ["Philosophical Fiction", "Classic"], cover: "#D9822B", pages: 152, height: 198 },
       { title: "Ikigai", author: "Héctor García & Francesc Miralles", cover: "#D64933", pages: 208, height: 190 },
       { title: "The Seven Year Slip", author: "Ashley Poston", cover: "#F2B8C6", pages: 352, height: 210, stayed: "A great concept and beautiful writing, but I never quite fell in love with it." },
-      { title: "Magnolia Parks", author: "Jessa Hastings", cover: "#F4A9B8", pages: 512, height: 216, stayed: "More drama than it needed , everything that could go wrong, does." },
-      { title: "The Luck Factor", author: "Richard Wiseman", category: "Non-fiction", genres: ["Psychology", "Self-help"], cover: "#3E8E41", pages: 288, height: 198, stayed: "Its case for being social and positive felt repetitive at the time , but looking back, it’s one of those books that quietly changes something in you." },
+      { title: "Magnolia Parks", author: "Jessa Hastings", cover: "#F4A9B8", pages: 512, height: 216, stayed: "More drama than it needed, everything that could go wrong, does." },
+      { title: "The Luck Factor", author: "Richard Wiseman", category: "Non-fiction", genres: ["Psychology", "Self-help"], cover: "#3E8E41", pages: 288, height: 198, stayed: "Its case for being social and positive felt repetitive at the time, but looking back, it’s one of those books that quietly changes something in you." },
       { title: "The Queen", author: "Kiera Cass", cover: "#7E2F5C", pages: 80, height: 198, shelf: "childhood" },
       { title: "Verity", author: "Colleen Hoover", category: "Thriller", genres: ["Psychological Thriller", "Romantic Suspense"], cover: "#1E1E24", pages: 336, height: 210 },
       { title: "Evidence of the Affair", author: "Taylor Jenkins Reid", cover: "#C9485B", pages: 64, height: 190 },
-      { title: "The Silent Patient", author: "Alex Michaelides", category: "Thriller", genres: ["Psychological Thriller"], cover: "#1F3B4D", pages: 352, height: 198, stayed: "I never quite understood one of Theo’s choices , but he made it, and the story runs on it." },
-      { title: "Carrie Soto Is Back", author: "Taylor Jenkins Reid", category: "Fiction", genres: ["Sports Fiction", "Literary Fiction"], cover: "#D1392F", pages: 384, height: 216, stayed: "Like every Taylor Jenkins Reid book, I loved it. I have no interest in tennis, yet it’s written so anyone can enjoy it , real, gripping and well-structured, and it comes full circle. She needed to come out of retirement to grow the beautiful way she did." },
-      { title: "All the Lovers in the Night", author: "Mieko Kawakami", cover: "#F2C12E", pages: 224, height: 210, stayed: "Poetic, yes , but mostly just very sad and bleak. I don’t have much more to say about it." },
-      { title: "Never Lie", author: "Freida McFadden", category: "Thriller", genres: ["Psychological Thriller", "Mystery"], cover: "#5B7FA6", pages: 320, height: 198, stayed: "Thrilling throughout, genuinely unpredictable and very well written, with consistent characters. A couple of choices near the end didn’t quite sit right with me , but it’s a great read." },
+      { title: "The Silent Patient", author: "Alex Michaelides", category: "Thriller", genres: ["Psychological Thriller"], cover: "#1F3B4D", pages: 352, height: 198, stayed: "I never quite understood one of Theo’s choices, but he made it, and the story runs on it." },
+      { title: "Carrie Soto Is Back", author: "Taylor Jenkins Reid", category: "Fiction", genres: ["Sports Fiction", "Literary Fiction"], cover: "#D1392F", pages: 384, height: 216, stayed: "Like every Taylor Jenkins Reid book, I loved it. I have no interest in tennis, yet it’s written so anyone can enjoy it, real, gripping and well-structured, and it comes full circle. She needed to come out of retirement to grow the beautiful way she did." },
+      { title: "All the Lovers in the Night", author: "Mieko Kawakami", cover: "#F2C12E", pages: 224, height: 210, stayed: "Poetic, yes, but mostly just very sad and bleak. I don’t have much more to say about it." },
+      { title: "Never Lie", author: "Freida McFadden", category: "Thriller", genres: ["Psychological Thriller", "Mystery"], cover: "#5B7FA6", pages: 320, height: 198, stayed: "Thrilling throughout, genuinely unpredictable and very well written, with consistent characters. A couple of choices near the end didn’t quite sit right with me, but it’s a great read." },
       { title: "Untamed", author: "Glennon Doyle", cover: "#F3B23A", pages: 352, height: 229, stayed: "It started off strong and I loved the early chapters, but it grows repetitive and could have been half the length. At times the author’s framing of herself didn’t land for me." },
       { title: "Metamorphosis", author: "Franz Kafka", cover: "#3F5E3A", pages: 112, height: 190 },
       { title: "Veronika Decides to Die", author: "Paulo Coelho", category: "Fiction", genres: ["Philosophical Fiction", "Psychological Drama"], cover: "#3C6E8F", pages: 224, height: 198 },
-      { title: "The Palace of Illusions", author: "Chitra Banerjee Divakaruni", category: "Fiction", genres: ["Mythological Fiction", "Historical Fiction"], cover: "#A11D2A", pages: 360, height: 216, stayed: "Panchaali’s rebellion and her undying questions , I loved watching her live with passion and conviction. A consistent, well-built character, flaws and strengths alike. A great read." },
+      { title: "The Palace of Illusions", author: "Chitra Banerjee Divakaruni", category: "Fiction", genres: ["Mythological Fiction", "Historical Fiction"], cover: "#A11D2A", pages: 360, height: 216, stayed: "Panchaali’s rebellion and her undying questions, I loved watching her live with passion and conviction. A consistent, well-built character, flaws and strengths alike. A great read." },
       { title: "After I Do", author: "Taylor Jenkins Reid", cover: "#7FB2D6", pages: 352, height: 210 },
       { title: "Harry Potter and the Philosopher’s Stone", author: "J.K. Rowling", cover: "#B22222", pages: 336, height: 198, shelf: "childhood" },
       { title: "A Good Girl’s Guide to Murder", author: "Holly Jackson", cover: "#F0ECE4", pages: 400, height: 198, shelf: "childhood" },
       { title: "Malibu Rising", author: "Taylor Jenkins Reid", category: "Fiction", genres: ["Historical Fiction", "Family Drama"], cover: "#F08A5D", pages: 384, height: 216 },
-      { title: "Better Than the Movies", author: "Lynn Painter", cover: "#E8546B", pages: 368, height: 210, stayed: "Light-hearted, funny and predictable in the most comforting way , it ends exactly how you want it to. A warm hug, or cotton candy." },
+      { title: "Better Than the Movies", author: "Lynn Painter", cover: "#E8546B", pages: 368, height: 210, stayed: "Light-hearted, funny and predictable in the most comforting way, it ends exactly how you want it to. A warm hug, or cotton candy." },
       { title: "The Meek One", author: "Fyodor Dostoevsky", cover: "#2A2A2A", pages: 80, height: 178, stayed: "Nothing really gripped me. Very open-ended, and I struggled to understand why the characters behaved the way they did." },
       { title: "One True Loves", author: "Taylor Jenkins Reid", cover: "#8EC5E8", pages: 352, height: 210 },
       { title: "The Alchemist", author: "Paulo Coelho", cover: "#E0A43A", pages: 208, height: 198 },
       { title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling", cover: "#9E2A2B", pages: 320, height: 193, shelf: "childhood" },
       { title: "The Fault in Our Stars", author: "John Green", cover: "#2C6FB7", pages: 320, height: 203, shelf: "childhood" },
       { title: "Everything I Know About Love", author: "Dolly Alderton", category: "Memoir", genres: ["Coming-of-age", "Relationships", "Personal Essays"], cover: "#E8475A", pages: 336, height: 198, stayed: "A comforting read that felt like a warm hug. I related to all the complicated feelings of growing older, and to the love she has for her friends." },
-      { title: "Daisy Jones & The Six", author: "Taylor Jenkins Reid", category: "Fiction", genres: ["Historical Fiction", "Music", "Literary Fiction"], cover: "#D9A441", pages: 368, height: 210, stayed: "Absolutely loved it , all the drama, and the moral ambiguity was amazing." },
+      { title: "Daisy Jones & The Six", author: "Taylor Jenkins Reid", category: "Fiction", genres: ["Historical Fiction", "Music", "Literary Fiction"], cover: "#D9A441", pages: 368, height: 210, stayed: "Absolutely loved it, all the drama, and the moral ambiguity was amazing." },
       { title: "Percy Jackson & the Olympians: The Lightning Thief", author: "Rick Riordan", category: "Fiction", genres: ["Fantasy", "Young Adult", "Greek Mythology", "Adventure"], cover: "#2E6DB4", pages: 377, height: 203, shelf: "childhood" },
       { title: "Percy Jackson & the Olympians: The Sea of Monsters", author: "Rick Riordan", category: "Fiction", genres: ["Fantasy", "Young Adult", "Greek Mythology", "Adventure"], cover: "#C0392B", pages: 279, height: 203, shelf: "childhood" },
       { title: "Percy Jackson & the Olympians: The Titan's Curse", author: "Rick Riordan", category: "Fiction", genres: ["Fantasy", "Young Adult", "Greek Mythology", "Adventure"], cover: "#5B4B8A", pages: 312, height: 203, shelf: "childhood" },
@@ -484,7 +617,7 @@ export const ARCHIVE = {
   /* ---------------------------------------------------------------------- */
   running: {
     since: "2024",
-    // TODO: real numbers
+    // DRAFT: every number and log entry below is invented. Replace before un-hiding.
     stats: [
       { label: "Fastest 5K", value: "27:42", note: "Oct 2025" },
       { label: "Fastest 10K", value: "58:10", note: "Mar 2026" },
@@ -524,9 +657,9 @@ export const ARCHIVE = {
       { date: "2024-07-15", kind: "changed", before: "Being busy means making progress.", after: "Being busy is often how I avoid deciding what matters." },
       { date: "2024-10-03", kind: "observation", text: "I write better code in the morning and better sentences at night. I should stop fighting that." },
       { date: "2025-02-18", kind: "excerpt", text: "The model was 98% accurate and completely wrong. There’s probably a lesson in that about more than models." },
-      { date: "2025-06-30", kind: "reflection", text: "Half a year of these pages and the same three worries keep coming back. Maybe that’s what they’re for , to notice what keeps coming back." },
+      { date: "2025-06-30", kind: "reflection", text: "Half a year of these pages and the same three worries keep coming back. Maybe that’s what they’re for, to notice what keeps coming back." },
       { date: "2025-09-11", kind: "changed", before: "Asking questions makes me look like I don’t know things.", after: "Asking questions is how I stop not knowing things." },
-      { date: "2025-11-19", kind: "observation", text: "Thought about the fig tree again. Maybe the trick isn’t choosing faster , it’s noticing that you can come back for more than one." },
+      { date: "2025-11-19", kind: "observation", text: "Thought about the fig tree again. Maybe the trick isn’t choosing faster, it’s noticing that you can come back for more than one." },
       { date: "2026-01-01", kind: "question", text: "What would I build if no one were ever going to see it?" },
       { date: "2026-05-27", kind: "observation", text: "The rain smelled like the first week of college. Some memories are stored in weather." },
       { date: "2026-09-02", kind: "excerpt", text: "I don’t journal to remember. I journal to find out what I already think." },

@@ -1,7 +1,7 @@
 /* The landing page: a composition notebook. Closed, it shows the marbled
    cover and its label. Tap it and the cover swings open onto page one
    (whose notebook this is, and how to reach them). Turn
-   page one and the contents are written on pages two and three , picking
+   page one and the contents are written on pages two and three, picking
    a line opens that part of the archive. */
 import { useEffect, useRef, useState, type CSSProperties } from "react"
 import { FigBranch } from "@/components/archive/fig"
@@ -75,7 +75,7 @@ function ReturnTo({ disabled }: { disabled: boolean }) {
 
 /* The contents, written into the notebook: a small copy of the Index spread
    (pages/Contents.tsx) with exactly the same text. These pages show while
-   page one turns, just before the notebook zooms into that spread , so
+   page one turns, just before the notebook zooms into that spread, so
    they're drawn, not clickable. Keep the two in step. */
 function PageToc({ wingId }: { wingId: string }) {
   const w = wing(wingId)!
@@ -112,7 +112,7 @@ function PageToc({ wingId }: { wingId: string }) {
 function PageTwo() {
   return (
     <>
-      <p className="pg-top"><span className="mono">ARCHIVE {A.about.catalogue} , ABOUT ME</span></p>
+      <p className="pg-top"><span className="mono">ARCHIVE {A.about.catalogue} · ABOUT ME</span></p>
       <p className="pg-index">Index</p>
       <p className="pg-tagline">{A.tagline}</p>
       <PageToc wingId={A.wings[0].id} />
