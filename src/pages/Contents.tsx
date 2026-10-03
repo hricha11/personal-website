@@ -75,7 +75,7 @@ export default function Contents() {
           <div className="nb-about">
             <p className="meta">The short version</p>
             {A.about.short.map((p) => <p key={p}>{p}</p>)}
-            <p className="nb-sign"><span className="hand">, Hri.</span><span className="mono">last written {fmtDay(A.lastUpdated)}</span></p>
+            <p className="nb-sign"><span className="hand">-Hri.</span><span className="mono">last written {fmtDay(A.lastUpdated)}</span></p>
           </div>
           <p className="nb-links">
             {A.links.map((l) =>
