@@ -1,11 +1,14 @@
 import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig, loadEnv, type Plugin } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 
-/* robots.txt and sitemap.xml, written at build time from VITE_SITE_URL (.env)
-   so the site's address lives in one place. Pages are hash routes (/#/…), so
+/* The site's public address. index.html (canonical link, social previews)
+   spells it out too, so change both if the site moves.
+   robots.txt and sitemap.xml are written from it at build time. Pages are hash routes (/#/…), so
    the sitemap lists the one real URL. */
+const SITE = 'https://personal-website-sepia-five-34.vercel.app'
+
 function crawlerFiles(site: string): Plugin {
   return {
     name: 'crawler-files',
@@ -23,13 +26,9 @@ function crawlerFiles(site: string): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  const site = (loadEnv(mode, process.cwd()).VITE_SITE_URL ?? '').replace(/\/$/, '')
-  if (!site) throw new Error('Set VITE_SITE_URL in .env (the site’s public address).')
-  return {
-    plugins: [react(), tailwindcss(), crawlerFiles(site)],
-    resolve: {
-      alias: { '@': path.resolve(__dirname, './src') },
-    },
-  }
+export default defineConfig({
+  plugins: [react(), tailwindcss(), crawlerFiles(SITE)],
+  resolve: {
+    alias: { '@': path.resolve(__dirname, './src') },
+  },
 })
